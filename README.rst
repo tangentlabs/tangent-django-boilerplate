@@ -15,11 +15,14 @@ Use this project with Django 1.4's ``startproject`` command::
 Note that you need to pass the following variables:
 
 * ``client`` - The client for this project
-* ``project_code`` - The project code
-* ``domain`` - The top-level domain for the test/stage sites and the alerts
-    mailing list
-* ``timezone`` - Which timezone to use the ``settings.py``
 
+* ``project_code`` - The project code
+
+* ``domain`` - The top-level domain for the test/stage sites and the alerts mailing list
+
+* ``timezone`` - Which timezone to use in ``settings.py``
+
+=======================================
 {{ client|title }} / {{ project_code }}
 =======================================
 
