@@ -12,3 +12,4 @@
 .coverage
 htmlcov/*
 *.~lock*
+www/conf/local.py
