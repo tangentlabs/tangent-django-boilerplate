@@ -10,7 +10,7 @@ is created.
 
 Use this project with Django 1.4's ``startproject`` command::
 
-    django-admin.py startproject --template=https://github.com/tangentlabs/tangent-django-boilerplate
+    django-admin.py startproject --template=https://github.com/tangentlabs/tangent-django-boilerplate/zipball/master
 
 Note that you need to pass the following variables:
 
