@@ -13,6 +13,7 @@ from fabric.api import env
 # Many things are configured using the client and project code
 env.client = '{{ client }}'
 env.project_code = '{{ project_code }}'
+env.domain = '{{ domain }}'
 
 # This is the name of the folder within the repo which houses all code
 # to be deployed.
@@ -27,17 +28,17 @@ def _configure(build_name):
     env.virtualenv = '%(project_dir)s/virtualenvs/%(build)s/' % env
     env.code_dir = '%(project_dir)s/builds/%(build)s/' % env
     env.data_dir = '%(project_dir)s/data/%(build)s/' % env
-    env.apache_conf = 'deploy/apache2/%(client)s-%(project_code)s-%(build)s.conf' % env
-    env.nginx_conf = 'deploy/nginx/%(client)s-%(project_code)s-%(build)s.conf' % env
+    env.apache_conf = 'deploy/apache2/%(build)s.conf' % env
+    env.nginx_conf = 'deploy/nginx/%(build)s.conf' % env
     env.wsgi = 'deploy/wsgi/%(build)s.wsgi' % env
 
 def test():
     _configure('test')
-    env.hosts = ['test.%(project_code)s.%(client)s.tangentlabs.co.uk']
+    env.hosts = ['test.%(project_code)s.%(client)s.%(domain)s'] % env
 
 def stage():
     _configure('stage')
-    env.hosts = ['stage.%(project_code)s.%(client)s.tangentlabs.co.uk']
+    env.hosts = ['stage.%(project_code)s.%(client)s.%(domain)s'] % env
 
 def prod():
     _configure('prod')
