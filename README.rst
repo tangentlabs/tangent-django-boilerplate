@@ -10,9 +10,9 @@ is created.
 
 Use this project with Django 1.4's ``startproject`` command::
 
-    django-admin.py startproject --template=https://github.com/tangentlabs/tangent-django-boilerplate/zipball/master
+    django-admin.py startproject $PROJECT_NAME --template=https://github.com/tangentlabs/tangent-django-boilerplate/zipball/master
 
-Note that you need to pass the following variables:
+Note that you need to specify a name for the project and pass the following variables:
 
 * ``client`` - The client for this project
 
@@ -21,6 +21,14 @@ Note that you need to pass the following variables:
 * ``domain`` - The top-level domain for the test/stage sites and the alerts mailing list
 
 * ``timezone`` - Which timezone to use in ``settings.py``
+
+Tangent developers can use the `tangent-kickstart`_ tool to simplify creation
+of projects that conform to our conventions:
+
+.. _`tangent-kickstart`: https://github.com/tangentlabs/tangent-kickstart
+
+The below copy will contains template variables - it gets merged with a context
+when a new boilerplate project is created.
 
 =======================================
 {{ client|title }} / {{ project_code }}
