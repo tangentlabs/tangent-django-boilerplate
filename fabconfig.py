@@ -21,6 +21,7 @@ env.web_dir = 'www'
 
 # Environment-agnostic folders
 env.project_dir = '/var/www/%(client)s/%(project_code)s' % env
+env.static_dir = '/mnt/static/%(client)s/%(project_code)s' % env
 env.builds_dir = '%(project_dir)s/builds' % env
 
 def _configure(build_name):
