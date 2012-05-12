@@ -5,4 +5,4 @@ django-debug-toolbar==0.9.4
 django-extensions==0.7.1
 python-memcached==1.47
 Fabric==1.4.0
--e git://github.com/tangentlabs/django-oscar.git#django_oscar-dev
+-e git://github.com/tangentlabs/django-oscar.git#egg=django_oscar-dev
