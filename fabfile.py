@@ -204,13 +204,13 @@ def set_robots_and_sitemaps():
     notify("Setting robots.txt and sitemaps")
     with cd(env.builds_dir):
         # create the proper symlinks to sitemaps and robots.txt
-        sudo("mkdir -p /mnt/static/landmark/%(build)s/sitemaps" % env)
-        sudo("""if [ -d /mnt/static/landmark/%(build)s/robots.txt ]; then
-                    cp %(build_dir)s/static/robots.txt /mnt/static/landmark/%(build)s/;
+        sudo("mkdir -p %(static_dir)s/%(build)s/sitemaps" % env)
+        sudo("""if [ -d %(static_dir)s/%(client)s/%(build)s/robots.txt ]; then
+                    cp %(build_dir)s/static/robots.txt %(static_dir)s/%(client)s/%(build)s/;
                 fi;""" % env)
         with cd("%(build_dir)s/public/static/" % env):
-            sudo("rm -rf sitemaps && ln -s /mnt/static/landmark/%(build)s/sitemaps sitemaps" % env)
-            sudo("rm robots.txt && ln -s /mnt/static/landmark/%(build)s/robots.txt robots.txt" % env)
+            sudo("rm -rf sitemaps && ln -s %(static_dir)s/%(build)s/sitemaps sitemaps" % env)
+            sudo("rm robots.txt && ln -s %(static_dir)s/%(/%(build)s/robots.txt robots.txt" % env)
 
 def update_virtualenv():
     """

@@ -5,3 +5,4 @@ django-debug-toolbar==0.9.4
 django-extensions==0.7.1
 python-memcached==1.47
 Fabric==1.4.0
+django_compressor==1.1.2
