@@ -110,7 +110,7 @@ TEMPLATE_DIRS = (
     location('templates'),
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -122,7 +122,7 @@ INSTALLED_APPS = (
     'south', # Do not change the position of south in this list unless specificall instructed to by installation instructions
     'django_extensions',
     'debug_toolbar',
-)
+]
 
 # This is set as in a HTML comment at the bottom of the page
 HOSTNAME = 'N/A'
