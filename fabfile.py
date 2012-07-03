@@ -1,8 +1,7 @@
 import datetime
 import os
-from os.path import normpath
 
-from fabric.decorators import runs_once, roles, task
+from fabric.decorators import runs_once
 from fabric.operations import put, prompt
 from fabric.colors import green, red
 from fabric.api import local, cd, sudo
@@ -180,12 +179,15 @@ def unpack(archive_path):
     Unpacks the tarball into the correct place but doesn't switch
     the symlink
     """
+    # Ensure all folders are in place
+    sudo('if [ ! -d "%(builds_dir)s" ]; then mkdir -p "%(builds_dir)s"; fi' % env)
+
     notify("Creating remote build folder")
     with cd(env.builds_dir):
         sudo('tar xzf %s' % archive_path)
 
         # Create new build folder
-        sudo('if [ -d "%(build_dir)s" ]; then rm -rf "%(build_dir)s"; fi'% env)
+        sudo('if [ -d "%(build_dir)s" ]; then rm -rf "%(build_dir)s"; fi' % env)
         sudo('mv %(web_dir)s %(build_dir)s' % env)
 
         # Symlink in uploads folder
