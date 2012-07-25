@@ -1,5 +1,5 @@
 """
-Project-specific environment information.  
+Project-specific environment information.
 
 This module provides configuration for the fabfile to run with.  The idea is
 that the fabfile is project-agnostic and all configuration takes place within
@@ -35,11 +35,11 @@ def _configure(build_name):
 
 def test():
     _configure('test')
-    env.hosts = ['test.%(project_code)s.%(client)s.%(domain)s'] % env
+    env.hosts = ['test-%(project_code)s-%(client)s.%(domain)s'] % env
 
 def stage():
     _configure('stage')
-    env.hosts = ['stage.%(project_code)s.%(client)s.%(domain)s'] % env
+    env.hosts = ['stage-%(project_code)s-%(client)s.%(domain)s'] % env
 
 def prod():
     _configure('prod')
