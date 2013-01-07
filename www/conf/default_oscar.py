@@ -166,8 +166,11 @@ COMPRESS_CACHE_KEY_FUNCTION = 'compressor.cache.socket_cachekey'
 COMPRESS_OFFLINE = True
 
 # Haystack settings
-HAYSTACK_SITECONF = 'oscar.search_sites'
-HAYSTACK_SEARCH_ENGINE = 'dummy'
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
+}
 
 CACHES = {
     'default': {
@@ -190,12 +193,12 @@ LOGGING = {
     },
     'handlers': {
         'null': {
-            'level':'DEBUG',
-            'class':'django.utils.log.NullHandler',
+            'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
         },
-        'console':{
-            'level':'DEBUG',
-            'class':'logging.StreamHandler',
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
         'checkout_file': {
@@ -225,11 +228,11 @@ LOGGING = {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': False,
-        },    
+        },
         'oscar.checkout': {
             'handlers': ['console', 'checkout_file'],
             'propagate': True,
-            'level':'INFO',
+            'level': 'INFO',
         },
     }
 }
