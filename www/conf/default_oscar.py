@@ -110,8 +110,10 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
+from oscar import OSCAR_MAIN_TEMPLATE_DIR
 TEMPLATE_DIRS = (
     location('templates'),
+    OSCAR_MAIN_TEMPLATE_DIR
 )
 
 INSTALLED_APPS = [
