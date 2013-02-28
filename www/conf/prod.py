@@ -17,5 +17,12 @@ DATABASES = {
     },
 }
 
+TEMPLATE_LOADERS = (
+    ('django.template.loaders.cached.Loader', (
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    )),
+)
+
 EMAIL_SUBJECT_PREFIX = '[{{ project_code }}][Prod] '
 LOG_ROOT = os.path.join(os.path.dirname(__file__), '../../../logs/prod')
