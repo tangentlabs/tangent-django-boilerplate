@@ -1,9 +1,10 @@
-Django>=1.4
-South>=0.7.3
-django-debug-toolbar>=0.9.4
-django-extensions>=0.7.1
-python-memcached>=1.47
-Fabric>=1.4.0
-
 # Use latest version of Oscar
 -e git://github.com/tangentlabs/django-oscar.git#egg=django_oscar-dev
+
+# Development packages
+django-debug-toolbar>=0.9.4,<1.0
+django-extensions>=0.7.1,<0.8
+Werkzeug>=0.8.3,<0.9
+
+# Deployment packages
+Fabric>=1.4.0,<1.5
