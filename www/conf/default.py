@@ -106,8 +106,11 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'urls'
 
+from oscar import OSCAR_MAIN_TEMPLATE_DIR
+
 TEMPLATE_DIRS = (
     location('templates'),
+    OSCAR_MAIN_TEMPLATE_DIR,
 )
 
 INSTALLED_APPS = (
@@ -122,6 +125,7 @@ INSTALLED_APPS = (
     'south', # Do not change the position of south in this list unless specificall instructed to by installation instructions
     'django_extensions',
     'debug_toolbar',
+    'compressor',
 )
 
 # This is set as in a HTML comment at the bottom of the page
