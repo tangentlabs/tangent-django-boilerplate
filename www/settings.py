@@ -23,21 +23,25 @@ if 'EXTRA_APPS' in locals():
 
 # Adjust settings based on the DISABLED_APPS setting
 if 'DISABLED_APPS' in locals():
+    # Redefine INSTALLED_APPS
     INSTALLED_APPS = [k for k in INSTALLED_APPS if k not in DISABLED_APPS]
     MIDDLEWARE_CLASSES = list(MIDDLEWARE_CLASSES)
     for app_name in DISABLED_APPS:
-        for x, m in enumerate(MIDDLEWARE_CLASSES):
+        # Remove any offending MIDDLEWARE and TEMPLATE_CONTEXT_PROCESSORS.
+        # Note a copy of the list is used within enumerate to avoid editing
+        # inplace.
+        for x, m in enumerate(MIDDLEWARE_CLASSES[:]):
             if m.startswith(app_name):
                 MIDDLEWARE_CLASSES.pop(x)
-    TEMPLATE_CONTEXT_PROCESSORS = list(TEMPLATE_CONTEXT_PROCESSORS)
-    for x, m in enumerate(TEMPLATE_CONTEXT_PROCESSORS):
-        if m.startswith(app_name):
-            TEMPLATE_CONTEXT_PROCESSORS.pop(x)
-    if 'DATABASE_ROUTERS' in locals():
-        DATABASE_ROUTERS = list(DATABASE_ROUTERS)
-        for x, m in enumerate(DATABASE_ROUTERS):
+        TEMPLATE_CONTEXT_PROCESSORS = list(TEMPLATE_CONTEXT_PROCESSORS)
+        for x, m in enumerate(TEMPLATE_CONTEXT_PROCESSORS[:]):
             if m.startswith(app_name):
-                DATABASE_ROUTERS.pop(x)
+                TEMPLATE_CONTEXT_PROCESSORS.pop(x)
+        if 'DATABASE_ROUTERS' in locals():
+            DATABASE_ROUTERS = list(DATABASE_ROUTERS)
+            for x, m in enumerate(DATABASE_ROUTERS[:]):
+                if m.startswith(app_name):
+                    DATABASE_ROUTERS.pop(x)
 
 # Keep version number here - this is generally overwritten as
 # part of deployment to be the build name
