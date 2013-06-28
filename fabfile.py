@@ -158,6 +158,7 @@ def init():
             sudo('mkdir -p virtualenvs/%(build)s' % env)
 
             sudo('`which virtualenv` --no-site-packages %(project_dir)s/virtualenvs/%(build)s/' % env)
+            sudo('echo "export DJANGO_CONF=\"conf.%(build)s\"" >> virtualenvs/%(build)s/bin/activate' % env)
         with cd('%(project_dir)s/builds/' % env):
             # Create directory and symlink for "zero" build
             sudo('mkdir %(build)s-0' % env)
