@@ -6,7 +6,7 @@ from fabric.operations import put, prompt
 from fabric.colors import green, red
 from fabric.api import local, cd, sudo
 
-# Import project settings 
+# Import project settings
 try:
     from fabconfig import *
 except ImportError:
@@ -77,7 +77,7 @@ def set_reference_to_deploy_from(branch):
         # Check this is valid
         notify("Checking chosen tag exists")
         local('git tag | grep "%s"' % env.version)
-        
+
     if env.build == 'prod':
         # If a production build, then we ensure that the master branch
         # gets updated to include all work up to this tag
@@ -141,6 +141,30 @@ def deploy():
     reload_apache()
     reload_nginx()
     delete_old_builds()
+
+def init():
+    """
+    Create initial project/build folder structure on remote machine
+    """
+    if exists(env.code_dir) is False:
+        notify('Setting up remote project structure for %s build' % env.build)
+        sudo('mkdir -p %s' % (env.project_dir))
+        with cd(env.project_dir):
+            sudo('mkdir -p builds')
+            sudo('mkdir -p data/%s' % env.build)
+            sudo('mkdir -p logs/%s' % env.build)
+            sudo('mkdir -p media/%s' % env.build)
+            sudo('mkdir -p run/%s' % env.build)
+            sudo('mkdir -p virtualenvs/%s' % env.build)
+
+            sudo('`which virtualenv` --no-site-packages %s/virtualenvs/%s/' % (env.project_dir, env.build))
+        with cd('%s/builds/' % env.project_dir):
+            # Create directory and symlink for "zero" build
+            sudo('mkdir %s-0' % env.build)
+            sudo('ln -s %s-0 %s' % (env.build, env.build))
+        notify('Remote project structure created')
+    else:
+        notify('Remote directory for %s build already exists, quitting' % env.build)
 
 def switch_symlink():
     notify("Switching symlinks")
