@@ -146,25 +146,25 @@ def init():
     """
     Create initial project/build folder structure on remote machine
     """
-    if exists(env.code_dir) is False:
-        notify('Setting up remote project structure for %s build' % env.build)
-        sudo('mkdir -p %s' % (env.project_dir))
+    if not exists(env.code_dir):
+        notify('Setting up remote project structure for %(build)s build' % env)
+        sudo('mkdir -p %(project_dir)s' % env)
         with cd(env.project_dir):
             sudo('mkdir -p builds')
-            sudo('mkdir -p data/%s' % env.build)
-            sudo('mkdir -p logs/%s' % env.build)
-            sudo('mkdir -p media/%s' % env.build)
-            sudo('mkdir -p run/%s' % env.build)
-            sudo('mkdir -p virtualenvs/%s' % env.build)
+            sudo('mkdir -p data/%(build)s' % env)
+            sudo('mkdir -p logs/%(build)s' % env)
+            sudo('mkdir -p media/%(build)s' % env)
+            sudo('mkdir -p run/%(build)s' % env)
+            sudo('mkdir -p virtualenvs/%(build)s' % env)
 
-            sudo('`which virtualenv` --no-site-packages %s/virtualenvs/%s/' % (env.project_dir, env.build))
-        with cd('%s/builds/' % env.project_dir):
+            sudo('`which virtualenv` --no-site-packages %(project_dir)s/virtualenvs/%(build)s/' % env)
+        with cd('%(project_dir)s/builds/' % env):
             # Create directory and symlink for "zero" build
-            sudo('mkdir %s-0' % env.build)
-            sudo('ln -s %s-0 %s' % (env.build, env.build))
+            sudo('mkdir %(build)s-0' % env)
+            sudo('ln -s %(build)s-0 %(build)s' % env)
         notify('Remote project structure created')
     else:
-        notify('Remote directory for %s build already exists, quitting' % env.build)
+        notify('Remote directory for %(build)s build already exists, quitting' % env)
 
 def switch_symlink():
     notify("Switching symlinks")
