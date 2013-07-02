@@ -132,14 +132,12 @@ def deploy():
     update_virtualenv()
     migrate()
     collect_static_files()
-    deploy_apache_config()
     deploy_nginx_config()
     deploy_supervisord_config()
     deploy_cronjobs()
 
     switch_symlink()
     reload_python_code()
-    reload_apache()
     reload_nginx()
     reload_supervisord()
     delete_old_builds()
@@ -180,10 +178,6 @@ def reload_python_code():
     notify('Touching WSGI file to reload python code')
     with cd(env.builds_dir):
         sudo('touch %(build)s/%(wsgi)s' % env)
-
-def reload_apache():
-    notify('Reloading Apache2 configuration')
-    sudo('/etc/init.d/apache2 reload')
 
 def reload_nginx():
     notify('Reloading nginx configuration')
@@ -266,11 +260,6 @@ def migrate():
     with cd(env.code_dir):
         sudo('source %s/bin/activate && ./manage.py syncdb --noinput > /dev/null' % env.virtualenv)
         sudo('source %s/bin/activate && ./manage.py migrate --ignore-ghost-migrations' % env.virtualenv)
-
-def deploy_apache_config():
-    notify('Moving apache config into place')
-    with cd(env.code_dir):
-        sudo('mv %(apache_conf)s /etc/apache2/sites-enabled/' % env)
 
 def deploy_nginx_config():
     notify('Moving nginx config into place')

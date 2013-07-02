@@ -29,7 +29,6 @@ def _configure(build_name):
     env.virtualenv = '%(project_dir)s/virtualenvs/%(build)s/' % env
     env.code_dir = '%(project_dir)s/builds/%(build)s/' % env
     env.data_dir = '%(project_dir)s/data/%(build)s/' % env
-    env.apache_conf = 'deploy/apache2/%(build)s.conf' % env
     env.nginx_conf = 'deploy/nginx/%(build)s.conf' % env
     env.supervisord_conf = 'deploy/supervisord/%(build)s.conf' % env
     env.wsgi = 'deploy/wsgi/%(build)s.wsgi' % env
