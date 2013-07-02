@@ -39,10 +39,15 @@ Communication
 
 [List mailing lists for projects]
 
-Installation for developers
----------------------------
+For developers
+--------------
 
 [Explain how to set-up the project and run the unit tests]
+
+For testers
+-----------
+
+[Add information useful for testing (eg magic bankcard numbers)]
 
 Environments
 ------------
