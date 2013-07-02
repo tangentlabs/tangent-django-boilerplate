@@ -134,12 +134,14 @@ def deploy():
     collect_static_files()
     deploy_apache_config()
     deploy_nginx_config()
+    deploy_supervisord_config()
     deploy_cronjobs()
 
     switch_symlink()
     reload_python_code()
     reload_apache()
     reload_nginx()
+    reload_supervisord()
     delete_old_builds()
 
 def init():
@@ -186,6 +188,10 @@ def reload_apache():
 def reload_nginx():
     notify('Reloading nginx configuration')
     sudo('/etc/init.d/nginx force-reload')
+
+def reload_supervisord():
+    notify('Reloading supervisord configuration')
+    sudo('/usr/bin/supervisorctl reload')
 
 def reload_tomcat():
     sudo('/etc/init.d/tomcat6 force-reload')
@@ -270,6 +276,11 @@ def deploy_nginx_config():
     notify('Moving nginx config into place')
     with cd(env.code_dir):
         sudo('mv %(nginx_conf)s /etc/nginx/sites-enabled/' % env)
+
+def deploy_supervisord_config():
+    notify('Moving supervisord config into place')
+    with cd(env.code_dir):
+        sudo('mv %(supervisord_conf)s /etc/supervisor/conf.d/' % env)
 
 def deploy_cronjobs():
     """
