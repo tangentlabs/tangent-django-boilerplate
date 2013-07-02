@@ -6,7 +6,7 @@ from fabric.operations import put, prompt
 from fabric.colors import green, red
 from fabric.api import local, cd, sudo
 
-# Import project settings 
+# Import project settings
 try:
     from fabconfig import *
 except ImportError:
@@ -77,7 +77,7 @@ def set_reference_to_deploy_from(branch):
         # Check this is valid
         notify("Checking chosen tag exists")
         local('git tag | grep "%s"' % env.version)
-        
+
     if env.build == 'prod':
         # If a production build, then we ensure that the master branch
         # gets updated to include all work up to this tag
@@ -134,13 +134,40 @@ def deploy():
     collect_static_files()
     deploy_apache_config()
     deploy_nginx_config()
+    deploy_supervisord_config()
     deploy_cronjobs()
 
     switch_symlink()
     reload_python_code()
     reload_apache()
     reload_nginx()
+    reload_supervisord()
     delete_old_builds()
+
+def init():
+    """
+    Create initial project/build folder structure on remote machine
+    """
+    if not exists(env.code_dir):
+        notify('Setting up remote project structure for %(build)s build' % env)
+        sudo('mkdir -p %(project_dir)s' % env)
+        with cd(env.project_dir):
+            sudo('mkdir -p builds')
+            sudo('mkdir -p data/%(build)s' % env)
+            sudo('mkdir -p logs/%(build)s' % env)
+            sudo('mkdir -p media/%(build)s' % env)
+            sudo('mkdir -p run/%(build)s' % env)
+            sudo('mkdir -p virtualenvs/%(build)s' % env)
+
+            sudo('`which virtualenv` --no-site-packages %(project_dir)s/virtualenvs/%(build)s/' % env)
+            sudo('echo "export DJANGO_CONF=\"conf.%(build)s\"" >> virtualenvs/%(build)s/bin/activate' % env)
+        with cd('%(project_dir)s/builds/' % env):
+            # Create directory and symlink for "zero" build
+            sudo('mkdir %(build)s-0' % env)
+            sudo('ln -s %(build)s-0 %(build)s' % env)
+        notify('Remote project structure created')
+    else:
+        notify('Remote directory for %(build)s build already exists, quitting' % env)
 
 def switch_symlink():
     notify("Switching symlinks")
@@ -161,6 +188,10 @@ def reload_apache():
 def reload_nginx():
     notify('Reloading nginx configuration')
     sudo('/etc/init.d/nginx force-reload')
+
+def reload_supervisord():
+    notify('Reloading supervisord configuration')
+    sudo('/usr/bin/supervisorctl reload')
 
 def reload_tomcat():
     sudo('/etc/init.d/tomcat6 force-reload')
@@ -245,6 +276,11 @@ def deploy_nginx_config():
     notify('Moving nginx config into place')
     with cd(env.code_dir):
         sudo('mv %(nginx_conf)s /etc/nginx/sites-enabled/' % env)
+
+def deploy_supervisord_config():
+    notify('Moving supervisord config into place')
+    with cd(env.code_dir):
+        sudo('mv %(supervisord_conf)s /etc/supervisor/conf.d/' % env)
 
 def deploy_cronjobs():
     """
