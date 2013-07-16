@@ -1,4 +1,3 @@
-from conf.local import *
+import os
 
-# This file could be added to .hgignore and used by developer to for customized
-# settings.
+__import__(os.environ.get('DJANGO_CONF', 'conf.local'), globals(), locals(), ['*'])
