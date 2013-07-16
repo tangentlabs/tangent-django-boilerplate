@@ -1,3 +1,5 @@
+from conf.default import *
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

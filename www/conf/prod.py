@@ -1,4 +1,4 @@
-import os
+from conf.default import *
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -25,4 +25,4 @@ TEMPLATE_LOADERS = (
 )
 
 EMAIL_SUBJECT_PREFIX = '[{{ project_code }}][Prod] '
-LOG_ROOT = os.path.join(os.path.dirname(__file__), '../../../logs/prod')
+LOG_ROOT = location('../../logs/prod')

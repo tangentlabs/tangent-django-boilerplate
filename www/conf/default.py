@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import decimal
 import os
-import sys
 
-location = lambda x: os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', x)
+location = lambda *path: os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', *path)
 
 DEBUG = False
 
