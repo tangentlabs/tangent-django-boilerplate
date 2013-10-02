@@ -156,7 +156,7 @@ DATETIME_FORMAT = 'd/m/Y H:i:s'
 
 USE_SSL = False
 USE_GOOGLE_ANALYTICS = False
-LOGIN_REDIRECT_URL = '/accounts/'
+LOGIN_REDIRECT_URL = '/'
 
 # For displaying version
 DISPLAY_VERSION = False
@@ -176,8 +176,7 @@ HAYSTACK_CONNECTIONS = {
 
 CACHES = {
     'default': {
-        'BACKEND':
-        'django.core.cache.backends.memcached.MemcachedCache',
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
         'LOCATION': '127.0.0.1:11211',
     }
 }
@@ -226,11 +225,6 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': False,
         },
-        'management_commands': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
         'oscar.checkout': {
             'handlers': ['console', 'checkout_file'],
             'propagate': True,
@@ -249,14 +243,6 @@ DEBUG_TOOLBAR_CONFIG = {
 from oscar.defaults import *
 
 OSCAR_ALLOW_ANON_CHECKOUT = True
-OSCAR_INITIAL_ORDER_STATUS = 'Pending'
-OSCAR_INITIAL_LINE_STATUS = 'Pending'
-OSCAR_ORDER_STATUS_PIPELINE = {
-    'Pending': ('Being processed', 'Cancelled',),
-    'Being processed': ('Processed', 'Cancelled',),
-    'Cancelled': (),
-}
-
 OSCAR_SHOP_NAME = '{{ client }} / {{ project_code }}'
 OSCAR_SHOP_TAGLINE = ''
 
