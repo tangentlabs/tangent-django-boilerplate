@@ -128,6 +128,7 @@ INSTALLED_APPS = [
     'south', # Do not change the position of south in this list unless specificall instructed to by installation instructions
     'django_extensions',
     'debug_toolbar',
+    'compressor',
 ]
 
 from oscar import get_core_apps
