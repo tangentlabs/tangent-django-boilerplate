@@ -5,14 +5,10 @@ from fabric.decorators import runs_once
 from fabric.operations import put, prompt
 from fabric.colors import green, red
 from fabric.api import local, cd, sudo
+from fabric.contirb.files import exists
 
-# Import project settings
-try:
-    from fabconfig import *
-except ImportError:
-    import sys
-    print "You need to define a fabconfig.py file with your project settings"
-    sys.exit()
+from fabconfig import env
+from fabconfig import test, stage, prod
 
 def _get_commit_id():
     """
