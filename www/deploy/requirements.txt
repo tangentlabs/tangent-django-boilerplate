@@ -1,12 +1,10 @@
-Django>=1.4,<1.5
-South>=0.7.6,<0.8
-python-memcached==1.47
-django_compressor>=1.1.2,<1.2
+Django
+South
 
 # Development packages
-django-debug-toolbar>=0.9.4,<1.0
-django-extensions>=0.7.1,<0.8
-Werkzeug>=0.8.3,<0.9
+django-debug-toolbar
+django-extensions
+Werkzeug
 
 # Deployment packages
-Fabric>=1.4.0,<1.5
+Fabric
