@@ -13,7 +13,6 @@ from fabric.api import env
 # Many things are configured using the client and project code
 env.client = '{{ client }}'
 env.project_code = '{{ project_code }}'
-env.domain = '{{ domain }}'
 
 # This is the name of the folder within the repo which houses all code
 # to be deployed.
@@ -24,6 +23,7 @@ env.project_dir = '/var/www/%(client)s/%(project_code)s' % env
 env.static_dir = '/mnt/static/%(client)s/%(project_code)s' % env
 env.builds_dir = '%(project_dir)s/builds' % env
 
+
 def _configure(build_name):
     env.build = build_name
     env.virtualenv = '%(project_dir)s/virtualenvs/%(build)s/' % env
@@ -33,13 +33,16 @@ def _configure(build_name):
     env.supervisord_conf = 'deploy/supervisord/%(build)s.conf' % env
     env.wsgi = 'deploy/wsgi/%(build)s.wsgi' % env
 
+
 def test():
     _configure('test')
-    env.hosts = ['test-%(project_code)s-%(client)s.%(domain)s'] % env
+    env.hosts = ['test-%(project_code)s-%(client)s.%(build)s' % env]
+
 
 def stage():
     _configure('stage')
-    env.hosts = ['stage-%(project_code)s-%(client)s.%(domain)s'] % env
+    env.hosts = ['stage-%(project_code)s-%(client)s.%(build)s' % env]
+
 
 def prod():
     _configure('prod')
