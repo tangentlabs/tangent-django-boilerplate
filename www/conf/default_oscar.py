@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+# Default settings are secure/production-ready.  Debug settings need to be
+# enabled locally.
+
 import os
 
 location = lambda *path: os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', *path)
@@ -75,10 +78,11 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '{{ secret_key }}'
 
-# List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
+    ('django.template.loaders.cached.Loader', (
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    )),
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -134,16 +138,6 @@ INSTALLED_APPS = [
 from oscar import get_core_apps
 INSTALLED_APPS += get_core_apps()
 
-# This is set as in a HTML comment at the bottom of the page
-HOSTNAME = 'N/A'
-
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
-LOG_ROOT = location('../logs/')
-
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 SESSION_COOKIE_HTTPONLY = True
 
@@ -155,12 +149,7 @@ AUTHENTICATION_BACKENDS = (
 DATE_FORMAT = 'd/m/Y'
 DATETIME_FORMAT = 'd/m/Y H:i:s'
 
-USE_SSL = False
-USE_GOOGLE_ANALYTICS = False
 LOGIN_REDIRECT_URL = '/'
-
-# For displaying version
-DISPLAY_VERSION = False
 
 # Disabled for local but enabled in real envs
 COMPRESS_ENABLED = False
@@ -182,69 +171,95 @@ CACHES = {
     }
 }
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+def create_logging_dict(root):
+    """
+    Create a logging dict using the passed root for log files
+    """
+    return {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'formatters': {
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+            },
+            'simple': {
+                'format': '%(levelname)s %(message)s'
+            },
         },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
+        'filters': {
+            'require_debug_false': {
+                '()': 'django.utils.log.RequireDebugFalse',
+            }
         },
-    },
-    'handlers': {
-        'null': {
-            'level': 'DEBUG',
-            'class': 'django.utils.log.NullHandler',
+        'handlers': {
+            'null': {
+                'level': 'DEBUG',
+                'class': 'django.utils.log.NullHandler',
+            },
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'verbose'
+            },
+            'checkout_file': {
+                'level': 'INFO',
+                'class': 'logging.RotatingFileHandler',
+                'filename': os.path.join(root, 'checkout.log'),
+                'maxBytes': 1024*1024*100,
+                'backupCount': 3,
+                'formatter': 'verbose'
+            },
+            'error_file': {
+                'level': 'INFO',
+                'class': 'oscar.core.logging.handlers.EnvFileHandler',
+                'filename': 'errors.log',
+                'formatter': 'verbose'
+            },
+            'mail_admins': {
+                'level': 'ERROR',
+                'filters': ['require_debug_false'],
+                'class': 'django.utils.log.AdminEmailHandler',
+            },
         },
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        },
-        'checkout_file': {
-             'level': 'INFO',
-             'class': 'oscar.core.logging.handlers.EnvFileHandler',
-             'filename': 'checkout.log',
-             'formatter': 'verbose'
-        },
-        'error_file': {
-             'level': 'INFO',
-             'class': 'oscar.core.logging.handlers.EnvFileHandler',
-             'filename': 'errors.log',
-             'formatter': 'verbose'
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-        },
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
-        },
-        'oscar.checkout': {
-            'handlers': ['console', 'checkout_file'],
-            'propagate': True,
-            'level': 'INFO',
-        },
+        'loggers': {
+            'django': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+                'propagate': False,
+            },
+            'django.request': {
+                'handlers': ['error_file', 'mail_admins'],
+                'level': 'ERROR',
+                'propagate': False,
+            },
+            # Enable this logger to see SQL queries
+            'django.db.backends': {
+                'handlers': ['null'],
+                'level': 'INFO',
+                'propagate': False,
+            },
+            'oscar.checkout': {
+                'handlers': ['console', 'checkout_file'],
+                'propagate': True,
+                'level': 'INFO',
+            },
+        }
     }
-}
 
-INTERNAL_IPS = ('127.0.0.1', '33.33.33.1', '10.0.2.2')
+# This setting should be overridden in each environment
+LOGGING = create_logging_dict(location('logs'))
 
+# Debug toolbar settings
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False
 }
+INTERNAL_IPS = ('127.0.0.1', '33.33.33.1', '10.0.2.2')
 
 # Oscar settings
 from oscar.defaults import *
 
 OSCAR_ALLOW_ANON_CHECKOUT = True
-OSCAR_SHOP_NAME = '{{ client }} / {{ project_code }}'
-OSCAR_SHOP_TAGLINE = ''
+OSCAR_SHOP_NAME = '{{ client }}'
+OSCAR_SHOP_TAGLINE = '{{ project_code }}'
 
 GOOGLE_ANALYTICS_ID = 'UA-XXXXX-Y'
