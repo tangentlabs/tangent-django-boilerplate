@@ -182,7 +182,7 @@ def create_logging_dict(root):
             },
             'checkout_file': {
                 'level': 'INFO',
-                'class': 'logging.RotatingFileHandler',
+                'class': 'logging.handlers.RotatingFileHandler',
                 'filename': os.path.join(root, 'checkout.log'),
                 'maxBytes': 1024*1024*100,
                 'backupCount': 3,
@@ -190,8 +190,10 @@ def create_logging_dict(root):
             },
             'error_file': {
                 'level': 'INFO',
-                'class': 'oscar.core.logging.handlers.EnvFileHandler',
-                'filename': 'errors.log',
+                'class': 'logging.handlers.RotatingFileHandler',
+                'filename': os.path.join(root, 'errors.log'),
+                'maxBytes': 1024*1024*100,
+                'backupCount': 3,
                 'formatter': 'verbose'
             },
             'mail_admins': {

@@ -16,7 +16,7 @@ DATABASES = {
     },
 }
 
-# Don't use cached templates in development
+# Don't use cached templates in development
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
