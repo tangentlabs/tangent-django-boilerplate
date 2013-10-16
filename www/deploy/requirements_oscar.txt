@@ -7,5 +7,11 @@ django-extensions
 Werkzeug
 pyflakes
 
+# Testing
+nose
+django-nose
+mock
+django-webtest
+
 # Deployment packages
 Fabric

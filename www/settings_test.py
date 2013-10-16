@@ -1,5 +1,7 @@
 from settings import *
 
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

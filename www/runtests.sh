@@ -7,7 +7,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 TESTS=${1:-"tests"}
 shift
-python manage.py test $TESTS --settings=settings_test -s -x --noinput $@
+python manage.py test $TESTS --settings=settings_test --noinput $@
 
 # Print out a nice colored message
 if [ $? -eq 0 ]; then
