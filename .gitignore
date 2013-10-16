@@ -1,14 +1,26 @@
+# Temporary files
 *.swp
 *.pyc
 *.swo
 *.swn
 *.*~
+.DS_Store
+*.~lock*
+
+# IDEs (boo)
 *.sqlite3
 .project
 .pydevproject
 .settings
+
+# Vagrant
 .vagrant
-.DS_Store
+
+# Testing
 .coverage
+coverage.xml
+nosetests.xml
 htmlcov/*
-*.~lock*
+
+# Uploads
+www/public/media
