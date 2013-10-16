@@ -2,13 +2,13 @@
 Tangent Django Boilerplate
 ==========================
 
-This is a boilerplate README.rst created from the `tangent-django-boilerplate`_ project.
+This is a boilerplate ``README.rst`` created from the `tangent-django-boilerplate`_ project.
 This section should be deleted and the below sections completed when the project
 is created.
 
 .. _`tangent-django-boilerplate`: https://github.com/tangentlabs/tangent-django-boilerplate
 
-Use this project with Django 1.4's ``startproject`` command::
+Use this project with Django's ``startproject`` command::
 
     django-admin.py startproject $PROJECT_NAME --extensions="py,rst,conf,wsgi" --template=https://github.com/tangentlabs/tangent-django-boilerplate/zipball/master
 
@@ -27,7 +27,7 @@ of projects that conform to our conventions:
 
 .. _`tangent-kickstart`: https://github.com/tangentlabs/tangent-kickstart
 
-The below copy will contains template variables - it gets merged with a context
+The below copy contains template variables - it gets merged with a context
 when a new boilerplate project is created.
 
 =======================================
