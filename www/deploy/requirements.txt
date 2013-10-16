@@ -5,6 +5,7 @@ South
 django-debug-toolbar
 django-extensions
 Werkzeug
+pyflakes
 
 # Deployment packages
 Fabric

@@ -5,6 +5,7 @@
 django-debug-toolbar
 django-extensions
 Werkzeug
+pyflakes
 
 # Deployment packages
-Fabric>=1.8
+Fabric
