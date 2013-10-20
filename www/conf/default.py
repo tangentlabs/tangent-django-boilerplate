@@ -213,7 +213,7 @@ def create_logging_dict(root):
                 'level': 'ERROR',
                 'propagate': False,
             },
-            # Enable this logger to see SQL queries
+            # Enable this logger to see SQL queries
             'django.db.backends': {
                 'handlers': ['null'],
                 'level': 'INFO',
