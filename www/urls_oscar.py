@@ -1,15 +1,16 @@
 from django.conf import settings
 from django.contrib import admin
 from django.conf.urls import patterns, include, url
+from django.views import generic
 
-from oscar.app import shop
+from oscar.app import application
 from oscar.views import handler500, handler404, handler403
 
 admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
-    (r'', include(shop.urls)),
+    (r'', include(application.urls)),
 )
 
 if settings.DEBUG:
