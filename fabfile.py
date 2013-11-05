@@ -123,6 +123,7 @@ def deploy():
     # Set SSH user and upload codebase to all servers, both
     # app and proc.
     set_ssh_user()
+    init()
     deploy_codebase(env.build_file, env.version)
 
     update_virtualenv()
@@ -142,26 +143,27 @@ def init():
     """
     Create initial project/build folder structure on remote machine
     """
-    if not exists(env.code_dir):
-        notify('Setting up remote project structure for %(build)s build' % env)
-        sudo('mkdir -p %(project_dir)s' % env)
-        with cd(env.project_dir):
-            sudo('mkdir -p builds')
-            sudo('mkdir -p data/%(build)s' % env)
-            sudo('mkdir -p logs/%(build)s' % env)
-            sudo('mkdir -p media/%(build)s' % env)
-            sudo('mkdir -p run/%(build)s' % env)
-            sudo('mkdir -p virtualenvs/%(build)s' % env)
+    notify('Setting up remote project structure for %(build)s build' % env)
+    sudo('mkdir -p %(project_dir)s' % env)
+    with cd(env.project_dir):
+        sudo('mkdir -p builds')
+        sudo('mkdir -p data/%(build)s' % env)
+        sudo('mkdir -p logs/%(build)s' % env)
+        sudo('mkdir -p media/%(build)s' % env)
+        sudo('mkdir -p run/%(build)s' % env)
+        sudo('mkdir -p virtualenvs/%(build)s' % env)
 
+        if not exists('virtualenvs/%(build)s' % env):
             sudo('`which virtualenv` --no-site-packages %(project_dir)s/virtualenvs/%(build)s/' % env)
             sudo('echo "export DJANGO_CONF=\"conf.%(build)s\"" >> virtualenvs/%(build)s/bin/activate' % env)
-        with cd('%(project_dir)s/builds/' % env):
+
+    with cd('%(project_dir)s/builds/' % env):
+        if not exists(env.build):
             # Create directory and symlink for "zero" build
             sudo('mkdir %(build)s-0' % env)
             sudo('ln -s %(build)s-0 %(build)s' % env)
-        notify('Remote project structure created')
-    else:
-        notify('Remote directory for %(build)s build already exists, quitting' % env)
+
+    notify('Remote project structure created')
 
 def switch_symlink():
     notify("Switching symlinks")
