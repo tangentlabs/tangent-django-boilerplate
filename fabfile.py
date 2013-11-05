@@ -5,7 +5,7 @@ from fabric.decorators import runs_once
 from fabric.operations import put, prompt
 from fabric.colors import green, red
 from fabric.api import local, cd, sudo
-from fabric.contirb.files import exists
+from fabric.contrib.files import exists
 
 from fabconfig import env
 from fabconfig import test, stage, prod
