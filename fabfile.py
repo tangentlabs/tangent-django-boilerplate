@@ -151,11 +151,14 @@ def init():
         sudo('mkdir -p logs/%(build)s' % env)
         sudo('mkdir -p media/%(build)s' % env)
         sudo('mkdir -p run/%(build)s' % env)
-        sudo('mkdir -p virtualenvs/%(build)s' % env)
 
-        if not exists('virtualenvs/%(build)s' % env):
-            sudo('`which virtualenv` --no-site-packages %(project_dir)s/virtualenvs/%(build)s/' % env)
-            sudo('echo "export DJANGO_CONF=\"conf.%(build)s\"" >> virtualenvs/%(build)s/bin/activate' % env)
+        # Check for virtualenv
+        virtualenv_dir = 'virtualenvs/%(build)s' % env
+        if not exists(virtualenv_dir):
+            sudo('mkdir -p %s' % virtualenv_dir)
+            with cd('%(project_dir)s/virtualenvs/' % env):
+                sudo('`which virtualenv` --no-site-packages %(build)s/' % env)
+                sudo('echo "export DJANGO_CONF=\"conf.%(build)s\"" >> %(build)s/bin/activate' % env)
 
     with cd('%(project_dir)s/builds/' % env):
         if not exists(env.build):
