@@ -1,5 +1,6 @@
 Django
 South
+django-compressor
 
 # Development packages
 django-debug-toolbar
@@ -12,6 +13,7 @@ nose
 django-nose
 mock
 django-webtest
+webtest
 
 # Deployment packages
 Fabric
