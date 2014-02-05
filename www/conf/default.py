@@ -228,7 +228,7 @@ def create_logging_dict(root):
     }
 
 # This setting should be overridden in each environment
-LOGGING = create_logging_dict(location('logs'))
+LOGGING = create_logging_dict(location('../logs'))
 
 # Debug toolbar settings
 DEBUG_TOOLBAR_CONFIG = {
