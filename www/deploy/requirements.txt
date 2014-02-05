@@ -1,6 +1,7 @@
-Django
+Django>=1.6
 South
 django-compressor
+python-memcached==1.53
 
 # Development packages
 django-debug-toolbar
