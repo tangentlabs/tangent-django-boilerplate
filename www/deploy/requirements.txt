@@ -7,7 +7,7 @@ python-memcached==1.53
 django-debug-toolbar
 django-extensions
 Werkzeug
-pyflakes
+flake8
 
 # Testing
 nose

@@ -21,5 +21,6 @@ if settings.DEBUG:
     from django.views import generic
     urlpatterns += patterns('',
         url(r'^templates/(?P<template_name>.*)$', render),
-        url(r'^styleguide/$', generic.TemplateView.as_view(template_name='styleguide.html'))
+        url(r'^styleguide/$', generic.TemplateView.as_view(
+            template_name='styleguide.html'))
     )
