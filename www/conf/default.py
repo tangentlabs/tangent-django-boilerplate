@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 
+# Default settings are secure/production-ready.  Debug settings need to be
+# enabled locally.
+
 import os
 
 location = lambda *path: os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', *path)
 
-# Default to production settings
 DEBUG = False
 
 ADMINS = (
@@ -78,7 +80,7 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '{{ secret_key }}'
 
-# List of callables that know how to import templates from various sources.
+# Use cached template loading by default
 TEMPLATE_LOADERS = (
     ('django.template.loaders.cached.Loader', (
         'django.template.loaders.filesystem.Loader',
@@ -128,15 +130,13 @@ INSTALLED_APPS = [
     'compressor',
 ]
 
+# Use cached sessions by default
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 SESSION_COOKIE_HTTPONLY = True
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
-
-DATE_FORMAT = 'd/m/Y'
-DATETIME_FORMAT = 'd/m/Y H:i:s'
 
 # Disabled for local but enabled in real envs
 COMPRESS_ENABLED = False
@@ -169,6 +169,9 @@ def create_logging_dict(root):
         'filters': {
             'require_debug_false': {
                 '()': 'django.utils.log.RequireDebugFalse',
+            },
+            'require_debug_true': {
+                '()': 'django.utils.log.RequireDebugTrue',
             }
         },
         'handlers': {
@@ -179,15 +182,8 @@ def create_logging_dict(root):
             'console': {
                 'level': 'DEBUG',
                 'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
-            },
-            'checkout_file': {
-                'level': 'INFO',
-                'class': 'logging.handlers.RotatingFileHandler',
-                'filename': os.path.join(root, 'checkout.log'),
-                'maxBytes': 1024*1024*100,
-                'backupCount': 3,
-                'formatter': 'verbose'
+                'formatter': 'verbose',
+                'filters': ['require_debug_true'],
             },
             'error_file': {
                 'level': 'INFO',
@@ -219,11 +215,6 @@ def create_logging_dict(root):
                 'handlers': ['null'],
                 'level': 'INFO',
                 'propagate': False,
-            },
-            'oscar.checkout': {
-                'handlers': ['console', 'checkout_file'],
-                'propagate': True,
-                'level': 'INFO',
             },
         }
     }

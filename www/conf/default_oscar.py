@@ -80,6 +80,7 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '{{ secret_key }}'
 
+# Use cached template loading by default
 TEMPLATE_LOADERS = (
     ('django.template.loaders.cached.Loader', (
         'django.template.loaders.filesystem.Loader',
@@ -139,6 +140,7 @@ INSTALLED_APPS = [
 from oscar import get_core_apps
 INSTALLED_APPS += get_core_apps()
 
+# Use cached sessions by default
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 SESSION_COOKIE_HTTPONLY = True
 
@@ -146,9 +148,6 @@ AUTHENTICATION_BACKENDS = (
     'oscar.apps.customer.auth_backends.Emailbackend',
     'django.contrib.auth.backends.ModelBackend',
 )
-
-DATE_FORMAT = 'd/m/Y'
-DATETIME_FORMAT = 'd/m/Y H:i:s'
 
 LOGIN_REDIRECT_URL = '/'
 
@@ -190,6 +189,9 @@ def create_logging_dict(root):
         'filters': {
             'require_debug_false': {
                 '()': 'django.utils.log.RequireDebugFalse',
+            },
+            'require_debug_true': {
+                '()': 'django.utils.log.RequireDebugTrue',
             }
         },
         'handlers': {
@@ -200,7 +202,8 @@ def create_logging_dict(root):
             'console': {
                 'level': 'DEBUG',
                 'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
+                'formatter': 'verbose',
+                'filters': ['require_debug_true'],
             },
             'checkout_file': {
                 'level': 'INFO',
@@ -250,7 +253,7 @@ def create_logging_dict(root):
     }
 
 # This setting should be overridden in each environment
-LOGGING = create_logging_dict(location('logs'))
+LOGGING = create_logging_dict(location('../logs'))
 
 # Debug toolbar settings
 DEBUG_TOOLBAR_CONFIG = {
