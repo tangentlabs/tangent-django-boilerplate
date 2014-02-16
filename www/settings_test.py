@@ -1,6 +1,8 @@
 from settings import *
 
+# Configure Nose
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = ['-s']
 
 DATABASES = {
     'default': {
