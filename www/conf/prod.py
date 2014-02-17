@@ -3,15 +3,17 @@ from conf.default import *
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '{{ project_code }}_prod', # Or path to database file if using sqlite3.
-        'USER': '{{ project_code}}_app', # Not used with sqlite3.
-        'PASSWORD': '', # Not used with sqlite3.
-        'HOST': '', # Set to empty string for peer (local non-IP socket). Not used with sqlite3.
-        'PORT': '', # Set to empty string for default. Not used with sqlite3.
+        'NAME': '{{ project_code }}_prod',
+        'USER': '{{ project_code}}_app',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     },
 }
-
 
 EMAIL_SUBJECT_PREFIX = '[{{ project_code }}][Prod] '
 
 LOG_ROOT = create_logging_dict(location('../../logs/prod'))
+
+# Insert production hostname here!
+ALLOWED_HOSTS = ['']
