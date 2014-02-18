@@ -1,0 +1,13 @@
+language: python
+
+env: 
+  - DJANGO_CONF=conf.default
+
+python:
+  - '2.7'
+
+install:
+  - "pip install -r www/deploy/requirements.txt"
+
+script:
+  - "www/runtests.sh"
