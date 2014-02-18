@@ -1,5 +1,6 @@
 from conf.default import *
 
+# All debugging activated
 DEBUG = TEMPLATE_DEBUG = True
 
 # Output emails to STDOUT
@@ -15,6 +16,9 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     },
 }
+
+# Use a folder outside of www for logs
+LOGGING = create_logging_dict(location('../logs'))
 
 # Don't use cached templates in development
 TEMPLATE_LOADERS = (
