@@ -14,4 +14,5 @@ if [ $? -eq 0 ]; then
 	echo -e "\033[42;37m\nTests passed!\033[0m"
 else
 	echo -e "\033[41;37m\nTests failed!\033[0m"
+    exit 1
 fi
