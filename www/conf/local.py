@@ -32,3 +32,6 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
+
+# Don't compress assets
+COMPRESS_ENABLED = True

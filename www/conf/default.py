@@ -139,7 +139,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Disabled for local but enabled in real envs
-COMPRESS_ENABLED = False
+COMPRESS_ENABLED = True
 COMPRESS_OUTPUT_DIR = 'cache'
 COMPRESS_CACHE_KEY_FUNCTION = 'compressor.cache.socket_cachekey'
 COMPRESS_OFFLINE = True
