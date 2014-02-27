@@ -264,7 +264,7 @@ def migrate():
     notify("Applying database migrations")
     with cd(env.code_dir):
         sudo('source %s/bin/activate && ./manage.py syncdb --noinput > /dev/null' % env.virtualenv)
-        sudo('source %s/bin/activate && ./manage.py migrate --ignore-ghost-migrations' % env.virtualenv)
+        sudo('source %s/bin/activate && ./manage.py migrate' % env.virtualenv)
 
 def deploy_nginx_config():
     notify('Moving nginx config into place')
