@@ -17,3 +17,6 @@ LOG_ROOT = create_logging_dict(location('../../logs/prod'))
 
 # Insert production hostname here!
 ALLOWED_HOSTS = ['']
+
+# Create a new project on Sentry to get the DSN value to put here.
+RAVEN_CONFIG['dsn'] = ''

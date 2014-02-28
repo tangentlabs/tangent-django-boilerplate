@@ -1,7 +1,12 @@
+# These dependencies should be pinned to an exact version.  They are left
+# open here just to get things started.
+
+# Application
 Django>=1.6
 South
 django-compressor
 python-memcached==1.53
+raven
 
 # Development packages
 django-debug-toolbar

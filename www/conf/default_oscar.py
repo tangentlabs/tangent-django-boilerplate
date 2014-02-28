@@ -261,6 +261,12 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 INTERNAL_IPS = ('127.0.0.1', '33.33.33.1', '10.0.2.2')
 
+# Raven settings (for Sentry)
+RAVEN_CONFIG = {
+    'dsn': '',  # each env should set its own Sentry DSN
+    'timeout': 5,
+}
+
 # Oscar settings
 from oscar.defaults import *
 

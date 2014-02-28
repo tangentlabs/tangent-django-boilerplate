@@ -4,6 +4,7 @@
 # Use latest version of Oscar - this may not be appropriate once you get
 # close to deploying to production
 -e git://github.com/tangentlabs/django-oscar.git#egg=django_oscar-dev
+raven
 
 # Development packages
 django-debug-toolbar
