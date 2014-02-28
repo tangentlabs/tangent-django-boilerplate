@@ -4,6 +4,7 @@
 # enabled locally.
 
 import os
+import sys
 
 location = lambda *path: os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', *path)
 
@@ -111,6 +112,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    # Oscar specific
     'oscar.apps.basket.middleware.BasketMiddleware',
 )
 
@@ -137,6 +139,7 @@ INSTALLED_APPS = [
     'compressor',
 ]
 
+# Add Oscar's core apps
 from oscar import get_core_apps
 INSTALLED_APPS += get_core_apps()
 
@@ -204,6 +207,7 @@ def create_logging_dict(root):
                 'class': 'logging.StreamHandler',
                 'formatter': 'verbose',
                 'filters': ['require_debug_true'],
+                'stream': sys.stdout,
             },
             'checkout_file': {
                 'level': 'INFO',

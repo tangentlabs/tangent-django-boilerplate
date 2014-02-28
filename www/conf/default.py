@@ -4,6 +4,7 @@
 # enabled locally.
 
 import os
+import sys
 
 location = lambda *path: os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', *path)
 
@@ -184,6 +185,7 @@ def create_logging_dict(root):
                 'class': 'logging.StreamHandler',
                 'formatter': 'verbose',
                 'filters': ['require_debug_true'],
+                'stream': sys.stdout,
             },
             'error_file': {
                 'level': 'INFO',
