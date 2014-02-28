@@ -1,17 +1,22 @@
-# Use latest version of Oscar
+# These dependencies should be pinned to an exact version.  They are left
+# open here just to get things started.
+
+# Use latest version of Oscar - this may not be appropriate once you get
+# close to deploying to production
 -e git://github.com/tangentlabs/django-oscar.git#egg=django_oscar-dev
 
 # Development packages
 django-debug-toolbar
 django-extensions
 Werkzeug
-pyflakes
+flake8
 
 # Testing
 nose
 django-nose
 mock
 django-webtest
+webtest
 
 # Deployment packages
 Fabric
