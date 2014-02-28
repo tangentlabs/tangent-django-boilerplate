@@ -124,7 +124,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.flatpages',
     'django.contrib.staticfiles',
-    'south', # Do not change the position of south in this list unless
+    'south', 
              # specifically instructed to by installation instructions
     'django_extensions',
     'debug_toolbar',
@@ -155,6 +155,9 @@ CACHES = {
 def create_logging_dict(root):
     """
     Create a logging dict using the passed root for log files
+
+    Note the file handlers don't rotate their files.  This should be handled by
+    logrotate (there is a sample conf file in www/deploy/logrotate.d).
     """
     return {
         'version': 1,
@@ -191,8 +194,6 @@ def create_logging_dict(root):
                 'level': 'INFO',
                 'class': 'logging.handlers.RotatingFileHandler',
                 'filename': os.path.join(root, 'errors.log'),
-                'maxBytes': 1024*1024*100,
-                'backupCount': 3,
                 'formatter': 'verbose'
             },
             'mail_admins': {
