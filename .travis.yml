@@ -3,6 +3,8 @@ language: python
 env: 
   - DJANGO_CONF=conf.default
 
+source_key: "Here goes BASE64'ed machine key"
+
 python:
   - '2.7'
 
@@ -11,3 +13,7 @@ install:
 
 script:
   - "www/runtests.sh"
+
+cache:
+  directories:
+    - /home/travis/virtualenv
