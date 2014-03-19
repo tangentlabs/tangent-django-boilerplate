@@ -33,5 +33,5 @@ CACHES = {
     }
 }
 
-# Don't compress assets
+# Don't compress assets
 COMPRESS_ENABLED = True
