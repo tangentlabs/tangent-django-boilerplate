@@ -10,7 +10,7 @@ is created.
 
 Use this project with Django's ``startproject`` command::
 
-    django-admin.py startproject $PROJECT_NAME --extensions="py,rst,conf,wsgi" --template=https://github.com/tangentlabs/tangent-django-boilerplate/zipball/master
+    django-admin.py startproject $PROJECT_NAME --extension="py,rst,conf,wsgi" --template=https://github.com/tangentlabs/tangent-django-boilerplate/zipball/master
 
 Note that you need to specify a name for the project and pass the following variables:
 
