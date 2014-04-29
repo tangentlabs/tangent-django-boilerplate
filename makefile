@@ -1,6 +1,11 @@
-.PHONY: install remove_pyc update_virtualenv remove_db create_db
+# Build a working version of the project
+build: virtualenv database
 
-install: remove_pyc update_virtualenv remove_db create_db load_fixtures
+# Update the virtualenv
+virtualenv: remove_pyc update_virtualenv
+
+# Create a database populated with data
+database: remove_db create_db load_fixtures
 
 remove_pyc:
 	-find . -type f -name "*.pyc" -delete
@@ -20,4 +25,7 @@ load_fixtures:
 test:
 	www/runtests.sh
 
-ci: install test
+# On travis, run all tests and check the project can be built from scratch
+travis: test database
+
+.PHONY: build virtualenv database remove_pyc update_virtualenv remove_db create_db load_fixtures test

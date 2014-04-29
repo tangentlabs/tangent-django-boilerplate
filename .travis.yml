@@ -3,16 +3,17 @@ language: python
 env: 
   - DJANGO_CONF=conf.default
 
-source_key: "Here goes BASE64'ed machine key"
+# Put base64 encoded machine key here if you need it.
+# source_key: ""
 
 python:
   - '2.7'
 
 install:
-  - "pip install -r www/deploy/requirements.txt"
+  - make virtualenv
 
 script:
-  - "www/runtests.sh"
+  - make travis
 
 cache:
   directories:
