@@ -2,8 +2,9 @@ import os
 
 from fabric.operations import put, prompt
 from fabric.colors import green, red
-from fabric.api import local, cd, sudo
+from fabric.api import local, cd, sudo, abort
 from fabric.contrib.files import exists
+from fabric.contrib.console import confirm
 
 from fabconfig import env
 from fabconfig import test, stage, prod  # noqa
@@ -134,14 +135,18 @@ def _verify_codebase_status(branch, remote):
     if num_remote_commits > 0:
         msg = (
             "Warning: There are %s commits on %s/%s that aren't merged into "
-            "this branch. Do you still still want to deploy? [y/N] ") % (
+            "this branch. Do you still still want to deploy?") % (
                 num_remote_commits, remote, branch)
-        is_deploy_ok = prompt(red(msg)).lower() == 'y'
-        assert is_deploy_ok
+        if not confirm(red(msg), default=False):
+            abort("Deployment aborted!")
 
     # If there any un-pushed local commits, push them
     if num_local_commits:
-        local('git push %s %s' % (remote, branch))
+        msg = (
+            "Warning: There are %s local unpushed commits. Push them now?") % (
+                num_local_commits,)
+        if confirm(red(msg)):
+            local('git push %s %s' % (remote, branch))
 
 
 def _determine_pointer(branch):
@@ -159,15 +164,15 @@ def _prompt_for_pointer(branch):
     """
     Return the pointer when building to test
     """
-    create_tag = prompt(red('Tag this release? [y/N] '))
-    if create_tag.lower() == 'y':
+    if confirm(red('Tag this release?'), default=False):
         pointer = _create_tag()
     else:
-        deploy_version = prompt(
-            red('Build from a specific commit (useful for debugging)? [y/N] '))
+        deploy_version = confirm(
+            red('Build from a specific commit (useful for debugging)?'),
+            default=False)
         print ''
-        if deploy_version.lower() == 'y':
-            pointer = prompt(red('Choose commit to build from: '))
+        if deploy_version:
+            pointer = prompt(red('Enter commit ID to build from: '))
         else:
             pointer = local('git describe %s' % branch, capture=True).strip()
     return pointer
@@ -177,11 +182,11 @@ def _create_tag():
     # Create a tag
     notify("Showing latest tags for reference")
     local('git tag | sort -V | tail -5')
-    pointer = prompt(red('Tag name [in format x.x.x]? '))
-    notify("Tagging version %s" % env.version)
+    tag = prompt(red('Tag name [in format x.x.x]? '))
+    notify("Tagging version %s" % tag)
     # Adding a message to the tab allows "git describe" to pick up the tag.
     local('git tag %s -m "Tagging version %s in fabfile"' % (
-        pointer, pointer))
+        tag, tag))
     # Ensure any created tags are pushed to the remote.
     local('git push --tags')
     return pointer
@@ -309,6 +314,8 @@ def _deploy_cronjobs():
         sudo("rename 's#BUILD#%(build_name)s#' deploy/cron.d/*" % env)
         sudo("sed -i 's#VIRTUALENV_ROOT#%(virtualenv_root)s#g' deploy/cron.d/*" % env)
         sudo("sed -i 's#BUILD_ROOT#%(build_root)s#g' deploy/cron.d/*" % env)
+        # Ensure permissions are correct and move into /etc/cron.d
+        sudo("chmod 600 deploy/cron.d/*" % env)
         sudo("mv deploy/cron.d/* /etc/cron.d" % env)
 
 
