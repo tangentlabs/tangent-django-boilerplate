@@ -1,23 +1,26 @@
-# These dependencies should be pinned to an exact version.  They are left
-# open here just to get things started.
-
 # Use latest version of Oscar - this may not be appropriate once you get
 # close to deploying to production
 -e git://github.com/tangentlabs/django-oscar.git#egg=django_oscar-dev
-raven
+
+# Application
+Django>=1.6
+South==0.8.4
+django-compressor==1.3
+python-memcached==1.53
+raven==4.2.1
 
 # Development packages
-django-debug-toolbar
-django-extensions
-Werkzeug
-flake8
+django-debug-toolbar==1.2
+django-extensions==1.3.3
+Werkzeug==0.9.4
+flake8==2.1.0
 
 # Testing
-nose
-django-nose
-mock
-django-webtest
-webtest
+nose==1.3.1
+django-nose==1.2
+mock==1.0.1
+django-webtest==1.7.7
+WebTest==2.0.15
 
 # Deployment packages
-Fabric
+Fabric==1.8.3

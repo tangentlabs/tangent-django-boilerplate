@@ -224,10 +224,7 @@ def create_logging_dict(root):
 
 # Debug toolbar settings
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False
-}
-INTERNAL_IPS = ('127.0.0.1', '33.33.33.1', '10.0.2.2')
+INTERNAL_IPS = ('127.0.0.1',)
 
 # Raven settings (for Sentry)
 RAVEN_CONFIG = {
