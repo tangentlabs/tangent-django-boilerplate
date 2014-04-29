@@ -38,7 +38,7 @@ def _configure(build_name):
 
     env.nginx_conf_filepath = '%(build_root)s/deploy/nginx/%(build_name)s.conf' % env
     env.supervisord_conf_filepath = '%(build_root)s/deploy/supervisord/%(build_name)s.conf' % env
-    env.wsgi_filepath = 'deploy/wsgi/%(build_name)s.wsgi' % env
+    env.wsgi_filepath = '%(build_root)s/deploy/wsgi/%(build_name)s.wsgi' % env
 
     env.hosts = ['%(client)s-%(project_code)s-%(build_name)s.tangentlabs.co.uk' % env]
 
