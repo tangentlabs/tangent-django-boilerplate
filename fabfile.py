@@ -174,7 +174,7 @@ def _prompt_for_pointer(branch):
         if deploy_version:
             pointer = prompt(red('Enter commit ID to build from: '))
         else:
-            pointer = local('git describe %s' % branch, capture=True).strip()
+            pointer = local('git describe --tags %s' % branch, capture=True).strip()
     return pointer
 
 
