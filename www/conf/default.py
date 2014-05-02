@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Default settings are secure/production-ready.  Debug settings need to be
-# enabled locally.
+# enabled locally in conf/local.py
 
 import os
 import sys
@@ -125,7 +125,6 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django.contrib.staticfiles',
     'south',
-             # specifically instructed to by installation instructions
     'django_extensions',
     'debug_toolbar',
     'compressor',
@@ -194,6 +193,7 @@ def create_logging_dict(root):
                 'level': 'INFO',
                 'class': 'logging.handlers.RotatingFileHandler',
                 'filename': os.path.join(root, 'errors.log'),
+                'filters': ['require_debug_false'],
                 'formatter': 'verbose'
             },
             'mail_admins': {
@@ -208,8 +208,10 @@ def create_logging_dict(root):
                 'level': 'DEBUG',
                 'propagate': False,
             },
+            # Log errors to console only when DEBUG=True but to both file and
+            # admins when DEBUG=False
             'django.request': {
-                'handlers': ['error_file', 'mail_admins'],
+                'handlers': ['console', 'error_file', 'mail_admins'],
                 'level': 'ERROR',
                 'propagate': False,
             },

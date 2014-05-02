@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Default settings are secure/production-ready.  Debug settings need to be
-# enabled locally.
+# enabled locally in conf/local.py
 
 import os
 import sys
@@ -222,6 +222,7 @@ def create_logging_dict(root):
                 'level': 'INFO',
                 'class': 'logging.handlers.RotatingFileHandler',
                 'filename': os.path.join(root, 'errors.log'),
+                'filters': ['require_debug_false'],
                 'formatter': 'verbose'
             },
             'mail_admins': {
@@ -236,8 +237,10 @@ def create_logging_dict(root):
                 'level': 'DEBUG',
                 'propagate': False,
             },
+            # Log errors to console only when DEBUG=True but to both file and
+            # admins when DEBUG=False
             'django.request': {
-                'handlers': ['error_file', 'mail_admins'],
+                'handlers': ['console', 'error_file', 'mail_admins'],
                 'level': 'ERROR',
                 'propagate': False,
             },
@@ -257,10 +260,7 @@ def create_logging_dict(root):
 
 # Debug toolbar settings
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False
-}
-INTERNAL_IPS = ('127.0.0.1', '33.33.33.1', '10.0.2.2')
+INTERNAL_IPS = ('127.0.0.1',)
 
 # Raven settings (for Sentry)
 RAVEN_CONFIG = {
