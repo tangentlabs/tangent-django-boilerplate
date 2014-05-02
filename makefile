@@ -25,6 +25,9 @@ load_fixtures:
 test:
 	www/runtests.sh
 
+clean:
+	-find . -type f -name "*.pyc" -delete
+
 # On travis, run all tests and check the project can be built from scratch
 travis: test database
 
