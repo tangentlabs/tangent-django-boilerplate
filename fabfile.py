@@ -93,20 +93,26 @@ def deploy():
     """
     Deploys the codebase
     """
+    # Upload tarball and unpack into place
     _deploy_codebase(env.tarball_filepath)
 
+    # Run processing scripts
     _update_virtualenv()
     _migrate_db_schema()
     _collect_static_files()
     _deploy_nginx_config()
     _deploy_supervisord_config()
-    _deploy_cronjobs()
+
+    # Make new codebase live
     _switch_symlink()
     _reload_python_code()
     _reload_nginx()
     _reload_supervisord()
-    _delete_old_builds()
 
+    # Clean-up
+    _delete_old_builds()
+    _push_tags()
+    _delete_tarball()
 
 # Helpers
 
@@ -324,6 +330,15 @@ def _delete_old_builds():
     with cd(env.builds_root):
         sudo('find . -maxdepth 1 -type d -name "%(build_name)s*" | sort -r | sed "1,9d" | xargs rm -rf' % env)
 
+
+def _push_tags():
+    notify("Pushing tags")
+    local('git push --tags')
+
+
+def _delete_tarball():
+    notify("Removing tarball")
+    local('rm %(tarball_filepath)s' % env)
 
 
 def _switch_symlink():
