@@ -24,8 +24,6 @@ if settings.DEBUG:
         url(r'^templates/(?P<template_name>.*)$', render),
         url(r'^styleguide/$', generic.TemplateView.as_view(
             template_name='styleguide.html'))
-        url(r'^maintenance/$', generic.TemplateView.as_view(
-            template_name='maintenance.html'))
     )
 
     # Do explicit setup of django debug toolbar
