@@ -16,13 +16,16 @@ if settings.DEBUG:
     urlpatterns += static(
         settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-    # Allow FEDs to get arbitrary templates rendered and see a styleguide
+    # Allow FEDs to get arbitrary templates rendered and see the styleguide and
+    # maintenance page.
     from django.shortcuts import render
     from django.views import generic
     urlpatterns += patterns('',
         url(r'^templates/(?P<template_name>.*)$', render),
         url(r'^styleguide/$', generic.TemplateView.as_view(
             template_name='styleguide.html'))
+        url(r'^maintenance/$', generic.TemplateView.as_view(
+            template_name='maintenance.html'))
     )
 
     # Do explicit setup of django debug toolbar
