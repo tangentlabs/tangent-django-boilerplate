@@ -30,26 +30,61 @@ of projects that conform to our conventions:
 The below copy contains template variables - it gets merged with a context
 when a new boilerplate project is created.
 
-=======================================
-{{ client|title }} / {{ project_code }}
-=======================================
+=============
+Project title
+=============
+
+
+*<Describe the purpose of this project. What problem is it trying to solve.>*
+
+Status
+------
+
+*<Set project up on Travis to get the correct token for the below image>*
+
+.. image:: https://magnum.travis-ci.com/tangentlabs/{{ client }}_{{ project_code }}.png?token=&branch=master   
+   :target: https://magnum.travis-ci.com/tangentlabs/{{ client }}_{{ project_code }}
+
+*<Set project up on Sentry and include URL here>*
 
 Communication
 -------------
 
-[List mailing lists for projects]
+*<List mailing lists and any other channels for project communication>*
 
 For developers
 --------------
 
-[Explain how to set-up the project and run the unit tests]
+*<Explain how to set-up the project locally and run the tests>*
+
+*<Explain how to deploy the project>*
 
 For testers
 -----------
 
-[Add information useful for testing (eg magic bankcard numbers)]
+*<List information that testers will need to know such as testing bankcard
+numbers.>*
 
-Environments
-------------
+Infrastructure
+--------------
 
-[List IP addresses and auth details for the various environments]
+*<Describe the infrastructure for this project, covering webservers, databases
+and other services (eg Solr, RabbitMQ). Include versions>*
+
+*<List the IP addresses of each server used by this project and any HTTP basic
+auth credentials>*
+
+Notes
+-----
+
+*<Describe any gotchas or unusual parts of the codebase. Assume the person who
+will take over this project from you is a serial killer who knows where you
+live.>*
+
+*<Describe the reasoning behind major design decisions>*
+
+Handover
+--------
+
+*<Describe any ongoing pieces of work. Cover the history of the feature and
+what development has been done to date. Highlight any potential risks.>*
