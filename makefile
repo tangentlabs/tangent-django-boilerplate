@@ -11,6 +11,7 @@ remove_pyc:
 	-find . -type f -name "*.pyc" -delete
 
 update_virtualenv:
+	pip install -e www
 	pip install -r www/deploy/requirements.txt
 
 remove_db:
