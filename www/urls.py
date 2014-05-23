@@ -1,11 +1,15 @@
 from django.conf import settings
 from django.contrib import admin
 from django.conf.urls import patterns, include, url
+from django.views import generic
 
 admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
+    # An example view for the example tests
+    (r'^$', generic.TemplateView.as_view(
+        template_name='home.html')),
 )
 
 if settings.DEBUG:
