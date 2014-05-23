@@ -1,5 +1,5 @@
 import pytest
-
+from selenium import webdriver
 from django_webtest import DjangoTestApp, WebTestMixin
 
 
@@ -18,3 +18,20 @@ def webtest(request):
     request.addfinalizer(wtm._unpatch_settings)
 
     return DjangoTestApp()
+
+
+@pytest.fixture(scope='session')
+def firefox(request):
+    browser = webdriver.Firefox()
+    request.addfinalizer(browser.quit)
+    return browser
+
+
+# You may need to install the Chrome webdriver for this fixture to work. See
+# this article for more info:
+# http://damien.co/resources/how-to-install-chromedriver-mac-os-x-selenium-python-7406
+@pytest.fixture(scope='session')
+def chrome(request):
+    browser = webdriver.Chrome()
+    request.addfinalizer(browser.quit)
+    return browser
