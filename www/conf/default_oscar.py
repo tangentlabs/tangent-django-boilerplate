@@ -6,7 +6,8 @@
 import os
 import sys
 
-location = lambda *path: os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', *path)
+location = lambda *path: os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), '..', *path)
 
 DEBUG = False
 
@@ -40,6 +41,9 @@ USE_I18N = True
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
 USE_L10N = True
+
+# Use timezone support
+USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -237,7 +241,7 @@ def create_logging_dict(root):
                 'level': 'DEBUG',
                 'propagate': False,
             },
-            # Log errors to console only when DEBUG=True but to both file and
+            # Log errors to console only when DEBUG=True but to both file and
             # admins when DEBUG=False
             'django.request': {
                 'handlers': ['console', 'error_file', 'mail_admins'],

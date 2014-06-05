@@ -6,7 +6,8 @@
 import os
 import sys
 
-location = lambda *path: os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', *path)
+location = lambda *path: os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), '..', *path)
 
 DEBUG = False
 
@@ -25,7 +26,7 @@ ATOMIC_REQUESTS = True
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = '{{ timezone }}'
+TIME_ZONE = 'Europe/London'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -154,6 +155,7 @@ CACHES = {
     }
 }
 
+
 def create_logging_dict(root):
     """
     Create a logging dict using the passed root for log files
@@ -211,7 +213,7 @@ def create_logging_dict(root):
                 'level': 'DEBUG',
                 'propagate': False,
             },
-            # Log errors to console only when DEBUG=True but to both file and
+            # Log errors to console only when DEBUG=True but to both file and
             # admins when DEBUG=False
             'django.request': {
                 'handlers': ['console', 'error_file', 'mail_admins'],
