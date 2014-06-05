@@ -100,6 +100,7 @@ def deploy():
     _update_virtualenv()
     _migrate_db_schema()
     _collect_static_files()
+    _deploy_cronjobs()
     _deploy_nginx_config()
     _deploy_supervisord_config()
 
