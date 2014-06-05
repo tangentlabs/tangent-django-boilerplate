@@ -29,7 +29,7 @@ load_fixtures:
 	python www/manage.py loaddata fixtures/*.json
 
 test:
-	www/runtests.sh
+	cd www && py.test
 
 clean:
 	-find . -type f -name "*.pyc" -delete
