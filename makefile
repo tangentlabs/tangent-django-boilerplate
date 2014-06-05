@@ -25,6 +25,7 @@ create_db:
 	python www/manage.py migrate
 
 load_fixtures:
+	python www/manage.py loaddata fixtures/*.json
 
 test:
 	www/runtests.sh

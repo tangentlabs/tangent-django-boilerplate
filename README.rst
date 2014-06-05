@@ -10,7 +10,9 @@ is created.
 
 Use this project with Django's ``startproject`` command::
 
-    django-admin.py startproject $PROJECT_NAME --extension="py,rst,conf,wsgi" --template=https://github.com/tangentlabs/tangent-django-boilerplate/zipball/master
+    $ django-admin.py startproject $PROJECT_NAME \
+      --extension="py,rst,conf,wsgi" \
+      --template=https://github.com/tangentlabs/tangent-django-boilerplate/zipball/master
 
 Note that you need to specify a name for the project and pass the following variables:
 
@@ -33,7 +35,6 @@ when a new boilerplate project is created.
 =============
 Project title
 =============
-
 
 *<Describe the purpose of this project. What problem is it trying to solve.>*
 
@@ -58,6 +59,18 @@ For developers
 *<Explain how to set-up the project locally and run the tests>*
 
 *<Explain how to deploy the project>*
+
+Two sample users are available in the local build::
+
+    username: superuser
+    email: superuser@example.com
+    password: testing
+
+and::
+
+    username: staff
+    email: staff@example.com
+    password: testing
 
 For testers
 -----------

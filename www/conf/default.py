@@ -41,6 +41,9 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
+# Use timezone support
+USE_TZ = True
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = location('public/media')
