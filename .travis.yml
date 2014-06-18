@@ -12,6 +12,12 @@ python:
 install:
   - make virtualenv
 
+# Run tests using same database as production
+#before_script:
+#  - psql -c 'CREATE ROLE test_role login createdb superuser;' -U postgres
+#  - psql -c 'CREATE DATABASE test_db OWNER test_role;' -U postgres
+#  - psql -c 'CREATE EXTENSION postgis;' -U postgres -d test_db
+
 script:
   - make travis
 
