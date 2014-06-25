@@ -3,10 +3,16 @@ from django.contrib import admin
 from django.conf.urls import patterns, include, url
 from django.views import generic
 
+import views
+
+
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     (r'^admin/', include(admin.site.urls)),
+    url(r'^private-media/(?P<path>.*)$', views.PrivateMediaView.as_view(),
+        name='private-media'),
     # An example view for the example tests
     (r'^$', generic.TemplateView.as_view(
         template_name='home.html')),
