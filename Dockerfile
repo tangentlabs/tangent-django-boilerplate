@@ -7,8 +7,7 @@ RUN apt-get install -y python-dev python-pip nginx supervisor
 # Copy code into container
 ADD ./ /code
 
-# Install python deps (note, no need for a virtualenv inside a container) and
-# build the sandbox database.
+# Install python deps and build the database
 RUN cd /code && make
 
 # Set-up nginx and supervisor
