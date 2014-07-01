@@ -38,6 +38,8 @@ Project title
 
 *<Describe the purpose of this project. What problem is it trying to solve.>*
 
+*<Describe any third party integrations.>*
+
 Status
 ------
 
@@ -56,11 +58,22 @@ Communication
 For developers
 --------------
 
-*<Explain how to set-up the project locally and run the tests>*
+Local set-up
+~~~~~~~~~~~~
 
-*<Explain how to deploy the project>*
+Clone the repo, create a virtualenv and run::
 
-Two sample users are available in the local build::
+    $ make
+
+This will:
+
+- Install all Python dependencies (from ``www/deploy/requirements.txt``);
+
+- Create your database schema
+
+- Load sample data (stored in ``fixtures/*.json``)
+
+Two sample users are loaded::
 
     username: superuser
     email: superuser@example.com
@@ -71,6 +84,35 @@ and::
     username: staff
     email: staff@example.com
     password: testing
+
+Re-run this make target when switching branches to rebuild your database.
+
+Testing
+~~~~~~~
+
+Run the test suite using either::
+
+    $ make test
+
+or::
+
+    $ cd www
+    $ py.test
+
+See the `py.test docs`_ for info on how to run subsets of the test suite.
+
+.. _`py.test docs`: http://pytest.org/latest/
+
+Deployment
+~~~~~~~~~~
+
+Deployment uses Fabric_. There are helper scripts for each environment::
+
+    $ ./deploy-to-test.sh
+    $ ./deploy-to-stage.sh
+    $ ./deploy-to-prod.sh
+
+.. _Fabric: http://www.fabfile.org/
 
 For testers
 -----------
@@ -95,9 +137,3 @@ will take over this project from you is a serial killer who knows where you
 live.>*
 
 *<Describe the reasoning behind major design decisions>*
-
-Handover
---------
-
-*<Describe any ongoing pieces of work. Cover the history of the feature and
-what development has been done to date. Highlight any potential risks.>*
