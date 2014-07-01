@@ -53,6 +53,7 @@ MEDIA_ROOT = location('public/media')
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/media/'
+PRIVATE_MEDIA_URL = '/media/private/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files

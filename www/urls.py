@@ -3,11 +3,21 @@ from django.contrib import admin
 from django.conf.urls import patterns, include, url
 from django.views import generic
 
+import views
+
+
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     (r'^admin/', include(admin.site.urls)),
-    # An example view for the example tests
+
+    # This view allows private files within MEDIA_ROOT to be downloaded
+    url(r'^private-media/(?P<path>.*)$', views.PrivateMediaView.as_view(),
+        name='private-media'),
+
+    # An example view for the example tests - replace this when you start work
+    # on a real project.
     (r'^$', generic.TemplateView.as_view(
         template_name='home.html')),
 )
