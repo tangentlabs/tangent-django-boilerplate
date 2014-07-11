@@ -1,0 +1,47 @@
+FROM ubuntu:14.04
+MAINTAINER david.dyball@tangentlabs.co.uk
+
+# Remember to set locale information correctly as
+# it can have adverse effects on software inside
+# the container
+RUN locale-gen en_GB.UTF-8
+ENV LANG "en_GB.UTF-8"
+ENV LANGUAGE "en_GB.UTF-8"
+ENV LC_ALL "en_GB.UTF-8"
+
+############# Tangent Machine User SSH Key ################
+# In most instances the machine-user SSH key is required  #
+# to pull dependancies from Github or Tangent-Git.        #
+#                                                         #
+# machine_user.key should NEVER be committed to the repo  #
+# copy it manually in place, or symlink it to a file      #
+# outside of the working directory before building        #
+#                                                         #
+###########################################################
+ADD deploy/shared/machine_ssh.key /root/.ssh/id_rsa
+
+# Put our requirements in place
+ADD deploy/shared/requirements.txt /opt/requirements.txt
+
+# Install some initial packages + some minor fixes for PIL/libjpeg
+RUN apt-get update && apt-get upgrade -y                                  && \
+    apt-get install -y build-essential                                       \
+                       libfreetype6-dev                                      \
+                       libjpeg-dev                                           \
+                       libpng12-dev                                          \
+                       libxml2-dev                                           \
+                       libxslt-dev                                           \
+                       nginx                                                 \
+                       python-dev                                            \
+                       python-pip                                            \
+                       supervisor                                            \
+                       vim                                                   \
+                       zlib1g-dev                                         && \
+    apt-get clean && apt-get autoclean                                    && \
+    ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib                   && \
+    ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib               && \
+    ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib                      && \
+    pip install uwsgi
+
+# Install our base python packages
+RUN pip install --upgrade -r /opt/requirements.txt

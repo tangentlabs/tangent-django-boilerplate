@@ -8,6 +8,11 @@ django-compressor
 python-memcached==1.53
 raven
 
+# Amazon AWS Packages
+django-storages
+awscli
+s3cmd
+
 # Development packages
 django-debug-toolbar
 django-extensions
@@ -20,6 +25,3 @@ django-nose
 mock
 django-webtest
 webtest
-
-# Deployment packages
-Fabric

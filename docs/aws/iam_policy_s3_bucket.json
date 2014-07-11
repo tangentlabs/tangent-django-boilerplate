@@ -1,0 +1,25 @@
+{
+  "Statement": [
+    {
+      "Sid": "Stmt1392737599648",
+      "Action": [
+        "s3:GetBucketLocation",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads",
+        "s3:ListBucketVersions"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::{BUCKET_NAME}"
+    },
+    {
+      "Sid": "Stmt1392737632032",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:ListMultipartUploadParts",
+        "s3:*Object*"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::{BUCKET_NAME}/*"
+    }
+  ]
+}
