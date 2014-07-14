@@ -1,29 +1,40 @@
 #!/bin/bash
+# 
+# Build the docker image ready for deployment
+
+# Immediately exit if a command exits with a non-zero status
 set -e
-trap "[[ -f Dockerfile ]] && rm Dockerfile" EXIT
 
-PROJECT_NAME=tangent-django-boilerplate
-REPO_NAME=${PROJECT_NAME}
+# Ensure the Dockerfile symlink is removed if an EXIT signal is raised
+trap "[[ -h Dockerfile ]] && unlink Dockerfile" EXIT
 
+# Set project name
+PROJECT_NAME=boilerplate
+
+# Ensure script is called correctly
 usage() {
-    [ -n "$1" ] && echo $1
-    printf "Ensure you have set the PROJECT_NAME variable in $0\n\nUsage: $0 [base|dev|release] [TAG | version]\n\n"
+    echo "Usage: $0 [base|dev|release] [TAG|VERSION]"
     exit 1
 }
+[[ -z $PROJECT_NAME ]] && usage "Missing project name"
+[[ -z $1 ]] && usage "Missing image type"
+[[ -z $2 ]] && usage "Missing tag"
 
-[ -z $PROJECT_NAME ] && usage
-[[ -z $1 ]] && usage "Missing image-type (base|dev|release)"
-[[ -z $2 ]] && usage "Missing TAG"
+IMAGETYPE=$1
+TAG=${2:-latest}
 
-case $1 in
-    base|local|dev|release)
-        if [ ! -f "deploy/${1}/Dockerfile" ]; then
-            printf "Missing $1 Dockerfile.\n\n"
+case $IMAGETYPE in
+    base|dev|release)
+        DOCKERFILE="deploy/$IMAGETYPE/Dockerfile"
+        if [ ! -f "$DOCKERFILE" ]; then
+            echo "Missing $ROLE Dockerfile ($DOCKERFILE)"
             exit 1
         else 
-            ln -sf deploy/${1}/Dockerfile Dockerfile
-            printf "Building ${REPO_NAME}-${1}:${2} from \"${2}\" files....\n\n"
-            docker build -t ${REPO_NAME}-${1}:${2} .
+            # Symlink the appropriate Dockerfile into place and run 'docker build'
+            ln -sf $DOCKERFILE Dockerfile
+            DOCKER_TAG="$PROJECT_NAME-$IMAGETYPE-$ROLE:$TAG"
+            printf "Building Docker image $DOCKER_TAG\n\n"
+            docker build -t $DOCKER_TAG .
         fi
     ;;
     *)
