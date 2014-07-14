@@ -1,69 +1,75 @@
 #!/bin/bash
-set -x
-set -e
-exec 2>&1> >(tee -a /opt/boot_stage1.log)
-exec 1> >(tee -a /opt/boot_stage1.log)
+#
+# Stage 1 (project agnostic) bootstrapping of an EC2 instance.
+#
+# The contents of this file need to be stored against the created EC2 instance as "user data".
+# See http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html
+#
+# This script:
+#   - updates the OS
+#   - installs Python and PIP
+#   - installs Docker and NSEnter
+#   - installs AWS CLI tools
+#   - configures the Docker config so this instance can talk to the Tangent Docker registry
+#   - downloads runs the "stage 2 bootstrap" script from S3
+#
+# This script is intended to be fairly project agnostic. Project-specific stuff is generally held in the
+# Stage 2 script.
+#
+# TODO:
+#   - Get this script working with Zabbix
 
+set -x  # Debug mode
+set -e  # Fail fast
 
-LOG=/opt/boot_stage1.log
-printf "\n\n==== Updating Apt ====\n\n" >> $LOG
-apt-get update >> $LOG 2>&1
-apt-get dist-upgrade -y >> $LOG 2>&1 || true
+# Keep all audit here
+LOGFILE="/opt/bootstrap.stage1.log"
 
+# Redirect STDOUT and STDERR to file
+exec 1> >(tee -a $LOGFILE)
+exec 2>&1
 
-printf "\n\n==== Installing Python Tools ====\n\n" >> $LOG
-apt-get install -y python-dev python-pip zabbix-agent >> $LOG 2>&1
+function notify {
+    printf "\n\n==== $1 ====\n\n"
+}
 
+notify "Updating Apt"
+apt-get update
+apt-get dist-upgrade -y
 
-printf "\n\n==== Installing Docker ====\n\n" >> $LOG
-wget -O - https://get.docker.io/ | bash >> $LOG 2>&1
-wget -O /usr/local/bin/nsenter https://github.com/daviddyball/nsenter/raw/master/nsenter
+notify "Installing Python Tools"
+apt-get install -y python-dev python-pip
+pip install -U pip
+
+notify "Installing Docker"
+wget -O - https://get.docker.io/ | bash
+
+notify "Installing nsenter"
+wget -O /usr/local/bin/nsenter https://github.com/tangentlabs/nsenter/raw/master/nsenter
 chmod +x /usr/local/bin/nsenter
 
-printf "\n\n==== Installing AWS CLI Tools ====\n\n" >> $LOG
-pip install awscli s3cmd >> $LOG 2>&1
+notify "Installing AWS CLI Tools"
+pip install awscli s3cmd
 
+# Pre-Populate the ~/.dockercfg for root and ubuntu so they can pull images
+# from docker.tangentlabs.co.uk. Note, this value of the auth needs to be
+# extracted from the Tangent Docs repo.
 
-# Pre-Populate the ~/.dockercfg for root and ubuntu so
-# they can pull images from docker.tangentlabs.co.uk
-printf "\n\n==== Creating Docker Credentials Files \n\n" >> $LOG 2>&1
-echo '{"https://docker.tangentlabs.co.uk/v1/":{"auth":"cHVibGlzaGVyOmVjaGVpbDhhaUJ1cmVlQ2FpcXV1NmplNg==","email":""}}' > /root/.dockercfg
-echo '{"https://docker.tangentlabs.co.uk/v1/":{"auth":"cHVibGlzaGVyOmVjaGVpbDhhaUJ1cmVlQ2FpcXV1NmplNg==","email":""}}' > /home/ubuntu/.dockercfg
+# DOCKER_REGISTRY_AUTH=
+notify "Creating Docker Credentials Files"
+[[ ! -z "$DOCKER_REGISTRY_AUTH" ]] && echo "Docker registry auth missing!" && exit 1 
+echo '{"https://docker.tangentlabs.co.uk/v1/":{"auth":"' $DOCKER_REGISTRY_AUTH '","email":""}}' > /root/.dockercfg
+echo '{"https://docker.tangentlabs.co.uk/v1/":{"auth":"' $DOCKER_REGISTRY_AUTH '","email":""}}' > /home/ubuntu/.dockercfg
 
+# Query the EC2 Instance Metadata and find the "Bootstrap" tag.  This tag
+# contains the 2nd-stage script required to continue the boot-automation
+# process.
+notify "Pulling Second-Stage Boot File from S3"
+INSTANCE_ID=$(ec2metadata | awk '/^instance-id/ {print $2}')
+BOOTSTRAP_SCRIPT=$(/usr/local/bin/aws ec2 describe-instances --region eu-west-1 --output text --instance-ids $INSTANCE_ID | awk '/Bootstrap/ {print $3}')
+aws s3 cp --region eu-west-1 $BOOTSTRAP_SCRIPT /opt/boot_stage2.sh
 
-# Query the EC2 Instance Metadata and find the "Bootstrap" tag.
-# This tag contains the 2nd-stage script required to continue
-# the boot-automation process.
-printf "\n\n==== Pulling Second-Stage Boot File from S3 ====\n\n" >> $LOG
-INSTANCE_ID=$(ec2metadata |grep ^instance-id:|awk '{print $2}'|grep '^i-.*$')
-BOOTSTRAP_SCRIPT=$(/usr/local/bin/aws ec2 describe-instances --region eu-west-1 --output text --instance-ids $INSTANCE_ID|grep Bootstrap|awk '{print $3}')
-aws s3 cp --region eu-west-1 $BOOTSTRAP_SCRIPT /opt/boot_stage2.sh >> $LOG 2>&1
-
-
-# Run the 2nd-stage boot script
-printf "\n\n==== Running 2nd-Stage Boot Script ====\n\n" >> $LOG 2>&1
-chmod +x /opt/boot_stage2.sh >> $LOG 2>&1
+# Run the 2nd-stage bootstrap script
+notify "Running 2nd-Stage Boot Script"
+chmod +x /opt/boot_stage2.sh
 sudo -u root /bin/bash -lc "bash /opt/boot_stage2.sh"
-
-
-#
-# Bellow is a WIP for integration with Zabbix. Due to the Ephemeral nature
-# of EC2 I have not yet found a way to integrate with Zabbix effectively.
-#
-# For the time being we will end the script here.
-#
-exit 0
-
-
-printf "\n\n==== Configuring Zabbix ===\n\n" >> $LOG
-ZABBIX_ID=$(/usr/local/bin/aws ec2 describe-instances --region eu-west-1 --output text --instance-ids $INSTANCE_ID|grep ZabbixID|awk '{print $3}')
-cat >> /etc/zabbix/zabbix_agentd.conf << EOF
-PidFile=/var/run/zabbix/zabbix_agentd.pid
-LogFile=/var/log/zabbix-agent/zabbix_agentd.log
-LogFileSize=0
-Server=87.83.25.12,zabbix-master1.tangentlabs.co.uk
-ServerActive=87.83.25.12,zabbix-master1.tangentlabs.co.uk
-Hostname=$ZABBIX_ID
-Include=/etc/zabbix/zabbix_agentd.conf.d/
-EOF
-sudo /etc/init.d/zabbix-agent restart >> $LOG 2>&1
