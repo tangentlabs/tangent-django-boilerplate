@@ -1,52 +1,62 @@
 #!/bin/bash
 #
-# EXAMPLE: Stage Webserver Bootstrap file
+# Stage 2 (project specific) bootstrapping of an EC2 instance
 #
-# NOTE: You need to enter in a valid HTAccess file S3 location if
-#       you want the site password protected!!!
-#
+# This file is just an example - it is intended to be customised for your project.
+# 
+# When ready, this file should be uploaded to S3 so it can be downloaded and
+# executed by the Stage 1 bootstrap script. It's S3 location will need to be set as a tag
+# against the EC2 instance.
 
-# This is the Docker Image Tag you want to pull
-RELEASE_VERSION=latest
+# ===================================================================
 
 # Set your project name here
 PROJECT=
 
+# Role of this container (eg webserver, search)
+ROLE=webserver
+
+# This is the Docker Image Tag you want to pull
+RELEASE_VERSION=latest
+
 # What is the address to configure the nginx vhost on to listen
 # for?
-URLS=
+HOSTNAMES=
 
 # Docker Repository to pull the image from
-DOCKER_IMAGE=docker.tangentlabs.co.uk/${PROJECT}-release-webserver:${RELEASE_VERSION}
+DOCKER_IMAGE_NAME=docker.tangentlabs.co.uk/${PROJECT}-release-${ROLE}:${RELEASE_VERSION}
 
-# S3 URI for HTAccess file should it be needed. Leave empty to
-# ignore password protection for the site.
+# S3 URI for htaccess file should it be needed. Leave empty to ignore password
+# protection for the site.
 HTACCESS_FILE=
 
-# Log output of this script too /opt/boot_stage2.log
-set -e
-exec 1> >(tee -a /opt/boot_stage2.log)
+# ===================================================================
+
+set -e  # Fail fast
+
+exec 1> >(tee -a /opt/bootstrap.stage2.log)
 exec 2>&1
 
 # Create a /containers/ subdirectory to act as a bridge
 # between the host and the container
-mkdir -p /containers/${PROJECT}-webserver/logs
-docker pull ${DOCKER_IMAGE}
-docker run -d -p 80 --name webserver-$RELEASE_VERSION \
-           -v /containers/${PROJET}-webserver:/host \
+HOST_SHARED_FOLDER="/containers/${PROJECT}-${ROLE}"
+mkdir -p "$HOST_SHARED_FOLDER/logs"
+
+# Fetch and run the docker image
+docker pull ${DOCKER_IMAGE_NAME}
+DOCKER_CONTAINER_NAME="$ROLE-$RELEASE_VERSION"
+docker run -d -p 80 --name $DOCKER_CONTAINER_NAME \
+           -v $HOST_SHARED_FOLDER:/host \
            -e UWSGI_INI_URI=s3://${PROJECT}/config/uwsgi.ini \
            -e DJANGO_CONFIG_URI=s3://${PROJECT}/config/prod.py \
-           ${DOCKER_IMAGE}
+           ${DOCKER_IMAGE_NAME}
 
 # Port 80 inside the container will be bound to a random
 # port on the host. Find out what it is!
-DOCKER_PORT=$(docker port webserver-$RELEASE_VERSION 80)
+DOCKER_PORT=$(docker port $DOCKER_CONTAINER_NAME 80)
 
-#
 # This may be redundant, but it will ensure nginx is installed
-#
 apt-get install -y nginx
-[ -e /etc/nginx/sites-enabled/default ] && rm /etc/nginx/sites-enabled/default
 find /etc/nginx/sites-enabled/ -type f -delete
 [ -n "$HTACCESS_FILE" ] && aws s3 cp $HTACCESS_FILE /etc/nginx/htpasswd
 
@@ -56,8 +66,8 @@ upstream docker {
 }
 
 server {
-    listen 80;#
-    server_name ${URLS};
+    listen 80;
+    server_name ${HOSTNAMES};
 
     location / {
         $([[ -n $HTACCESS_FILE ]] && printf "auth_basic \"Restricted\";")
@@ -68,8 +78,4 @@ server {
 }
 EOF
 
-#
-# If you want to automate the restart of Nginx, uncomment this
-#
-
-#/etc/init.d/nginx restart
+/etc/init.d/nginx restart
