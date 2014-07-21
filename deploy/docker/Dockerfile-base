@@ -1,5 +1,5 @@
-FROM ubuntu:14.04
-MAINTAINER david.dyball@tangentlabs.co.uk
+# Use pre-packaged base box from internal registry
+FROM docker-internal.tangentuk.local/tangent-12.04:latest
 
 # Remember to set locale information correctly as
 # it can have adverse effects on software inside

@@ -1,4 +1,5 @@
 FROM tangent-django-boilerplate-base:latest
+
 MAINTAINER david.dyball@tangentlabs.co.uk
 
 # Add our codebase
