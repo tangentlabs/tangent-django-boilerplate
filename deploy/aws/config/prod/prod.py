@@ -1,8 +1,8 @@
-from conf.default import *
+from conf.default import *  # noqa
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': '{{ project_code }}_prod',
         'USER': '{{ project_code}}_prod',
         'PASSWORD': '',
@@ -13,10 +13,10 @@ DATABASES = {
 
 EMAIL_SUBJECT_PREFIX = '[{{ project_code }}][Prod] '
 
-# Save logs to the docker containers /host/ mount 
+# Save logs to the docker containers /host/ mount
 # (bind-mounted to /containers/{container-name}/
 # on the host machine
-LOG_ROOT = '/host/logs'
+LOGGING = create_logging_dict('/host/logs')
 
 # Insert production hostname here!
 ALLOWED_HOSTS = ['']
