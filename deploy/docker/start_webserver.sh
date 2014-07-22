@@ -1,52 +1,49 @@
 #!/bin/bash
 #
+# Webserver setup/start script for Docker
 #
-#  Webserver Setup/Start Script for Docker
+# This script takes arguments via BASH environment variables and
+# is capable of extension to include other customer functionality
+# on a per-project basis.
 #
-#  This script takes arguments via BASH environment variables and
-#  is capable of extension to include other customer functionality
-#  on a per-project basis.
+# The BASH variables currently parsed by this script are:
 #
-#  The BASH variables currently parsed by this script are:
+#     DJANGO_CONFIG_URI (required)
+#         An S3/HTTP/HTTPS URI or a file that has been
+#         exposed to the container through the /host/ mount
+#         point. Parsed by get_file() function bellow.
 #
-#       DJANGO_CONFIG_URI (required)
-#               An S3/HTTP/HTTPS URI or a file that has been
-#               exposed to the container through the /host/ mount
-#               point. Parsed by get_file() function bellow.
+#         Examples:
+#             ./deploy/aws/config/stage/stage.py
+#             ./deploy/aws/config/prod/prod.py
 #
-#               Examples:
-#                   ./deploy/aws/config/stage/stage.py
-#                   ./deploy/aws/config/prod/prod.py
+#     UWSGI_INI_URI (optional)
+#         S3/HTTP/HTTPS or /host/ reference to a custom
+#         Uwsgi ini file used for booting your application
 #
-#       UWSGI_INI_URI (optional)
-#               S3/HTTP/HTTPS or /host/ reference to a custom
-#               Uwsgi ini file used for booting your application
+#         Example:
+#             ./deploy/aws/config/stage/uwsgi.ini
 #
-#               Example:
-#                   ./deploy/aws/config/stage/uwsgi.ini
+#     CRON_INI_URI (optional)
+#         S3/HTTP/HTTPS or /host/ reference to a custom cron
+#         INI file. Cron is performed using the Uwsgi
+#         "unique-cron" function, so the INI file needs to
+#         be in Uwsgi INI format.
 #
-#       CRON_INI_URI (optional)
-#               S3/HTTP/HTTPS or /host/ reference to a custom cron
-#               INI file. Cron is performed using the Uwsgi
-#               "unique-cron" function, so the INI file needs to
-#               be in Uwsgi INI format.
+#         Example:
+#             ./deploy/aws/config/stage/cron.ini
 #
-#               Example:
-#                   ./deploy/aws/config/stage/cron.ini
+#     SUPERVISOR_CONFIG_URI (optional)
+#         S3/HTTP/HTTPS or /host/ reference to a customer
+#         supervisor configuration file. Can be used to
+#         overwrite the default behaviour configured in
+#         /etc/supervisor/conf.d/app.conf
 #
-#       SUPERVISOR_CONFIG_URI (optional)
-#               S3/HTTP/HTTPS or /host/ reference to a customer
-#               supervisor configuration file. Can be used to
-#               overwrite the default behaviour configured in
-#               /etc/supervisor/conf.d/app.conf
-#
-#               Example:
-#                   ./deploy/shared/supervisor.app.conf
-#
+#         Example:
+#             ./deploy/shared/supervisor.app.conf
 
-#
+
 # Helper Functions
-#
 
 function error() {
     # Print an error message and exit with error (1)
@@ -55,6 +52,8 @@ function error() {
 }
 
 function get_file() {
+    # Fetch a file from a remote location
+    #
     # get_file [variable-name] [variable-contents] [destination-file]
     #
     #         get_file MY_BASH_VARIABLE $MY_BASH_VARIABLE /opt/myfile
@@ -95,17 +94,16 @@ function get_file() {
 }
 
 
+set -e  # Fail fast
 
-# Any Error from ANY command is fatal to the script
-set -e
-
-# Redirect all output from this script to /host/logs/startup.log
+# Copy all output to file
 exec 1> >(tee -a /host/logs/startup.log)
 exec 2>&1
 
 # Check that DJANGO_URI was specified or exit with error
-[ -z "${DJANGO_CONFIG_URI}" ] && error "DJANGO_CONFIG_URI cannot be empty.\n\nExiting....\n\n"
-# Retrieve Django Configuration File and save it to a known location
+[ -z "${DJANGO_CONFIG_URI}" ] && error "DJANGO_CONFIG_URI cannot be empty"
+
+# Retrieve Django conf and save it to a known location
 get_file DJANGO_CONFIG_URI $DJANGO_CONFIG_URI /var/www/conf/docker.py
 
 # If UWSGI_INI_URI was specified, download the file
@@ -117,15 +115,14 @@ get_file DJANGO_CONFIG_URI $DJANGO_CONFIG_URI /var/www/conf/docker.py
 # If SUPERVISOR_CONFIG_URI was specified, download the file
 [ -n "${SUPERVISOR_CONFIG_URI}" ] && get_file SUPERVISOR_CONFIG_URI $SUPERVISOR_CONFIG_URI /etc/supervisor/conf.d/app.py
 
-
 # Run Django pre-flight checks and log output to /host/logs/django_management.log
 exec 1> >(tee -a /host/logs/django_management.log)
 
-# Run SyncDB
+# Update database
 DJANGO_CONF=conf.docker ./manage.py syncdb --noinput
-# Run Migrations
 DJANGO_CONF=conf.docker ./manage.py migrate
-# Run collect-static backgrounded
+
+# Run collect-static in background
 DJANGO_CONF=conf.docker ./manage.py collectstatic &
 
 # Hand off to supervisor
