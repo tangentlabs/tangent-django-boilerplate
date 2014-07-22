@@ -3,11 +3,24 @@ language: python
 env: 
   - DJANGO_CONF=conf.default
 
+# Put base64 encoded machine key here if you need it.
+# source_key: ""
+
 python:
   - '2.7'
 
 install:
-  - "pip install -r www/deploy/requirements.txt"
+  - make virtualenv
+
+# Run tests using same database as production
+#before_script:
+#  - psql -c 'CREATE ROLE test_role login createdb superuser;' -U postgres
+#  - psql -c 'CREATE DATABASE test_db OWNER test_role;' -U postgres
+#  - psql -c 'CREATE EXTENSION postgis;' -U postgres -d test_db
 
 script:
-  - "www/runtests.sh"
+  - make travis
+
+cache:
+  directories:
+    - /home/travis/virtualenv

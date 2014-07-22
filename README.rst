@@ -10,7 +10,9 @@ is created.
 
 Use this project with Django's ``startproject`` command::
 
-    django-admin.py startproject $PROJECT_NAME --extensions="py,rst,conf,wsgi" --template=https://github.com/tangentlabs/tangent-django-boilerplate/zipball/master
+    $ django-admin.py startproject $PROJECT_NAME \
+      --extension="py,rst,conf,wsgi" \
+      --template=https://github.com/tangentlabs/tangent-django-boilerplate/zipball/master
 
 Note that you need to specify a name for the project and pass the following variables:
 
@@ -30,26 +32,108 @@ of projects that conform to our conventions:
 The below copy contains template variables - it gets merged with a context
 when a new boilerplate project is created.
 
-=======================================
-{{ client|title }} / {{ project_code }}
-=======================================
+=============
+Project title
+=============
+
+*<Describe the purpose of this project. What problem is it trying to solve.>*
+
+*<Describe any third party integrations.>*
+
+Status
+------
+
+*<Set project up on Travis to get the correct token for the below image>*
+
+.. image:: https://magnum.travis-ci.com/tangentlabs/{{ client }}_{{ project_code }}.png?token=&branch=master   
+   :target: https://magnum.travis-ci.com/tangentlabs/{{ client }}_{{ project_code }}
+
+*<Set project up on Sentry and include URL here>*
 
 Communication
 -------------
 
-[List mailing lists for projects]
+*<List mailing lists and any other channels for project communication>*
 
 For developers
 --------------
 
-[Explain how to set-up the project and run the unit tests]
+Local set-up
+~~~~~~~~~~~~
+
+Clone the repo, create a virtualenv and run::
+
+    $ make
+
+This will:
+
+- Install all Python dependencies (from ``www/deploy/requirements.txt``);
+
+- Create your database schema
+
+- Load sample data (stored in ``fixtures/*.json``)
+
+Two sample users are loaded::
+
+    username: superuser
+    email: superuser@example.com
+    password: testing
+
+and::
+
+    username: staff
+    email: staff@example.com
+    password: testing
+
+Re-run this make target when switching branches to rebuild your database.
+
+Testing
+~~~~~~~
+
+Run the test suite using either::
+
+    $ make test
+
+or::
+
+    $ cd www
+    $ py.test
+
+See the `py.test docs`_ for info on how to run subsets of the test suite.
+
+.. _`py.test docs`: http://pytest.org/latest/
+
+Deployment
+~~~~~~~~~~
+
+Deployment uses Fabric_. There are helper scripts for each environment::
+
+    $ ./deploy-to-test.sh
+    $ ./deploy-to-stage.sh
+    $ ./deploy-to-prod.sh
+
+.. _Fabric: http://www.fabfile.org/
 
 For testers
 -----------
 
-[Add information useful for testing (eg magic bankcard numbers)]
+*<List information that testers will need to know such as testing bankcard
+numbers.>*
 
-Environments
-------------
+Infrastructure
+--------------
 
-[List IP addresses and auth details for the various environments]
+*<Describe the infrastructure for this project, covering webservers, databases
+and other services (eg Solr, RabbitMQ). Include versions>*
+
+*<List the IP addresses of each server used by this project and any HTTP basic
+auth credentials>*
+
+Notes
+-----
+
+*<Describe any gotchas or unusual parts of the codebase. Assume the person who
+will take over this project from you is a serial killer who knows where you
+live.>*
+
+*<Describe the reasoning behind major design decisions>*

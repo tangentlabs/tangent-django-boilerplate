@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
 from django.conf.urls import patterns, include, url
-from django.views import generic
 
 from oscar.app import application
 from oscar.views import handler500, handler404, handler403
@@ -10,6 +9,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
+    (r'^i18n/', include('django.conf.urls.i18n')),
     (r'', include(application.urls)),
 )
 
@@ -30,7 +30,14 @@ if settings.DEBUG:
 
     # Allow FEDs to get arbitrary templates rendered and see a styleguide
     from django.shortcuts import render
+    from django.views import generic
     urlpatterns += patterns('',
         url(r'^templates/(?P<template_name>.*)$', render),
-        url(r'^styleguide/$', generic.TemplateView.as_view(template_name='styleguide.html'))
+        url(r'^styleguide/$', generic.TemplateView.as_view(
+            template_name='styleguide.html'))
     )
+
+    # Do explicit setup of django debug toolbar
+    import debug_toolbar
+    urlpatterns += patterns(
+        '', url(r'^__debug__/', include(debug_toolbar.urls)))

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
 # Default settings are secure/production-ready.  Debug settings need to be
-# enabled locally.
+# enabled locally in conf/local.py
 
 import os
 import sys
 
-location = lambda *path: os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', *path)
+location = lambda *path: os.path.join(
+    os.path.dirname(os.path.realpath(__file__)), '..', *path)
 
 DEBUG = False
 
@@ -25,7 +26,7 @@ ATOMIC_REQUESTS = True
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = '{{ timezone }}'
+TIME_ZONE = 'Europe/London'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -41,6 +42,9 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
+# Use timezone support
+USE_TZ = True
+
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = location('public/media')
@@ -49,6 +53,7 @@ MEDIA_ROOT = location('public/media')
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/media/'
+PRIVATE_MEDIA_URL = '/media/private/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -125,7 +130,6 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django.contrib.staticfiles',
     'south',
-             # specifically instructed to by installation instructions
     'django_extensions',
     'debug_toolbar',
     'compressor',
@@ -151,6 +155,7 @@ CACHES = {
         'LOCATION': '127.0.0.1:11211',
     }
 }
+
 
 def create_logging_dict(root):
     """
@@ -194,6 +199,7 @@ def create_logging_dict(root):
                 'level': 'INFO',
                 'class': 'logging.handlers.RotatingFileHandler',
                 'filename': os.path.join(root, 'errors.log'),
+                'filters': ['require_debug_false'],
                 'formatter': 'verbose'
             },
             'mail_admins': {
@@ -208,8 +214,10 @@ def create_logging_dict(root):
                 'level': 'DEBUG',
                 'propagate': False,
             },
+            # Log errors to console only when DEBUG=True but to both file and
+            # admins when DEBUG=False
             'django.request': {
-                'handlers': ['error_file', 'mail_admins'],
+                'handlers': ['console', 'error_file', 'mail_admins'],
                 'level': 'ERROR',
                 'propagate': False,
             },
@@ -223,12 +231,10 @@ def create_logging_dict(root):
     }
 
 # Debug toolbar settings
-DEBUG_TOOLBAR_CONFIG = {
-    'INTERCEPT_REDIRECTS': False
-}
-INTERNAL_IPS = ('127.0.0.1', '33.33.33.1', '10.0.2.2')
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
+INTERNAL_IPS = ('127.0.0.1',)
 
-# Raven settings (for Sentry)
+# Raven settings (for Sentry)
 RAVEN_CONFIG = {
     'dsn': '',  # each env should set its own Sentry DSN
     'timeout': 5,
