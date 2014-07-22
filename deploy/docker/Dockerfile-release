@@ -1,8 +1,7 @@
+# Best to extend a tagged release of the base box (not latest)
 FROM tangent-django-boilerplate-base:latest
 
-MAINTAINER david.dyball@tangentlabs.co.uk
-
-# Add our codebase
+# Add codebase
 ADD www /var/www
 
 # Add a supervisor script that will run our app and supporting
@@ -10,13 +9,20 @@ ADD www /var/www
 ADD deploy/shared/supervisor.app.conf /etc/supervisor/conf.d/app.conf
 
 # Add our Docker start-up script and make it executable
-ADD deploy/shared/bash.start_webserver.sh /opt/start_webserver.sh
+ADD deploy/docker/start_webserver.sh /opt/start_webserver.sh
 RUN chmod +x /opt/start_webserver.sh
 
-# UWSGI is configured to talk WSGI protocol and bind to port
-# 80 by default. Nginx should use "uwsgi_pass" to send traffic
-# to it.
+# uWSGI is configured to talk WSGI protocol and bind to port 80 by default.
+# Nginx should use "uwsgi_pass" to send traffic to it.
 EXPOSE 80
 
-# The default command to run if nothing is specified on the CLI
+# Default command. Note that this script requires several environmental variables
+# to be passed in order for it to run. Eg:
+# 
+# docker run -P -e UWSGI_INI_URI=s3://project/config/uwsgi.ini \
+#               -e DJANGO_CONFIG_URI=s3://project/config/prod.py \
+#               $IMAGE_NAME
+# 
+# See deploy/aws/bootstrap/bootstrap_webserver.sh for how the docker container is 
+# run.
 CMD ['/opt/start_webserver.sh']

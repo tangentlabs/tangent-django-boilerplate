@@ -1,1 +1,2 @@
-FROM 
+# Best to extend a tagged release of the base box (not latest)
+FROM tangent-django-boilerplate-base:latest
