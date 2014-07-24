@@ -230,6 +230,10 @@ def create_logging_dict(root):
         }
     }
 
+# Aside from local development, we run within a Docker container which has a
+# volume mounted at /host/. We default to logging within there.
+LOGGING = create_logging_dict('/host/logs')
+
 # Debug toolbar settings
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 INTERNAL_IPS = ('127.0.0.1',)

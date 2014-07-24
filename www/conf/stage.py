@@ -1,8 +1,9 @@
-from conf.default import *
+from conf.default import *  # noqa
 
+# The stage database will be on RDS
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': '{{ project_code }}_stage',
         'USER': '{{ project_code}}_app',
         'PASSWORD': '',
@@ -12,8 +13,6 @@ DATABASES = {
 }
 
 EMAIL_SUBJECT_PREFIX = '[{{ project_code }}][Stage] '
-
-LOGGING = create_logging_dict(location('../../logs/stage'))
 
 ALLOWED_HOSTS = ['{{ client }}-{{ project_code }}-stage.tangentlabs.co.uk']
 

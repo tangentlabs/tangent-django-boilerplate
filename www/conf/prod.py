@@ -1,8 +1,9 @@
-from conf.default import *
+from conf.default import *  # noqa
 
+# The production database will be on RDS
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': '{{ project_code }}_prod',
         'USER': '{{ project_code}}_app',
         'PASSWORD': '',
@@ -12,8 +13,6 @@ DATABASES = {
 }
 
 EMAIL_SUBJECT_PREFIX = '[{{ project_code }}][Prod] '
-
-LOG_ROOT = create_logging_dict(location('../../logs/prod'))
 
 # Insert production hostname here!
 ALLOWED_HOSTS = ['']
