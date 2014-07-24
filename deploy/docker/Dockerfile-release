@@ -6,7 +6,7 @@ ADD www /var/www
 
 # Add a supervisor script that will run our app and supporting
 # services
-ADD deploy/shared/supervisor.app.conf /etc/supervisor/conf.d/app.conf
+ADD deploy/supervisor/app.conf /etc/supervisor/conf.d/
 
 # Add our Docker start-up script and make it executable
 ADD deploy/docker/start_webserver.sh /opt/start_webserver.sh
