@@ -6,11 +6,11 @@ FROM docker-internal.tangentuk.local/tangent-12.04:latest
 
 # Set locale information correctly as it can have adverse effects on software
 # inside the container
-RUN locale-gen en_GB.UTF-8
-ENV LANG "en_GB.UTF-8"
-ENV LANGUAGE "en_GB.UTF-8"
-ENV LC_ALL "en_GB.UTF-8"
+RUN locale-gen --no-purge en_GB.UTF-8
+ENV LC_ALL en_GB.UTF-8
+RUN update-locale LANG=en_GB.UTF-8
 
+# Install common packages
 RUN apt-get update
 RUN apt-get install -y build-essential libfreetype6-dev libjpeg-dev \
     libpng12-dev libxml2-dev libxslt-dev nginx python-dev python-pip \
