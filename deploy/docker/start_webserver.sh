@@ -52,7 +52,7 @@ function error() {
 }
 
 function get_file() {
-    # Fetch a file from a remote location
+    # Fetch a file from a (possibly remote) location
     #
     # get_file [variable-name] [variable-contents] [destination-file]
     #
@@ -78,7 +78,7 @@ function get_file() {
         http://*|https://*)
             OUTPUT=$(wget -O $DEST $URI) || error "Error retrieving file from $URI\n\n$OUTPUT\n\nExiting\n\n"
         ;;
-        /host/*)
+        /*)
             OUTPUT=$(cp $URI $DEST) || error "Error copying file from $URI\n\n$OUTPUT\n\nExiting\n\n"
         ;;
         *)
@@ -96,9 +96,15 @@ function get_file() {
 
 set -e  # Fail fast
 
+# Ensure there is a folder to log to
+[[ ! -d /host/logs ]] && mkdir -p /host/logs
+
 # Copy all output to file
-exec 1> >(tee -a /host/logs/startup.log)
+exec 1> >(tee -a /host/logs/container_startup.log)
 exec 2>&1
+
+echo
+echo "Starting container: `date`"
 
 # Check that DJANGO_URI was specified or exit with error
 [ -z "${DJANGO_CONFIG_URI}" ] && error "DJANGO_CONFIG_URI cannot be empty"
@@ -115,16 +121,12 @@ get_file DJANGO_CONFIG_URI $DJANGO_CONFIG_URI /var/www/conf/docker.py
 # If SUPERVISOR_CONFIG_URI was specified, download the file
 [ -n "${SUPERVISOR_CONFIG_URI}" ] && get_file SUPERVISOR_CONFIG_URI $SUPERVISOR_CONFIG_URI /etc/supervisor/conf.d/app.py
 
-# Run Django pre-flight checks and log output to /host/logs/django_management.log
-exec 1> >(tee -a /host/logs/django_management.log)
-
-# Update database
+echo "Updating database schema"
+cd /var/www/
 DJANGO_CONF=conf.docker ./manage.py syncdb --noinput
 DJANGO_CONF=conf.docker ./manage.py migrate
 
-# Run collect-static in background
-DJANGO_CONF=conf.docker ./manage.py collectstatic &
+echo "Collecting static files"
+DJANGO_CONF=conf.docker ./manage.py collectstatic --noinput
 
-# Hand off to supervisor
-exec 1> >(tee -a /host/logs/supervisor.log)
-supervisord -n
+supervisord -n 
