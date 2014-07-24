@@ -1,5 +1,5 @@
 # Best to extend a tagged release of the base box (not latest)
-FROM tangent-django-boilerplate-base:latest
+FROM boilerplate-base:latest
 
 # Add codebase
 ADD www /var/www
@@ -16,13 +16,19 @@ RUN chmod +x /opt/start_webserver.sh
 # Nginx should use "uwsgi_pass" to send traffic to it.
 EXPOSE 80
 
-# Default command. Note that this script requires several environmental variables
-# to be passed in order for it to run. Eg:
+# Default command to run. Note that this script requires several environmental
+# variables to be passed in order for it to run. On an VM, use something like:
+#
+# docker run -P \
+#   -v /containers/$PROJECT/host/:/host/ \
+#   -e DJANGO_CONFIG_URI=/var/www/conf/test.py \
+#   $IMAGE_NAME
+#
+# To run on AWS, use:
 # 
-# docker run -P -e UWSGI_INI_URI=s3://project/config/uwsgi.ini \
-#               -e DJANGO_CONFIG_URI=s3://project/config/prod.py \
-#               $IMAGE_NAME
-# 
-# See deploy/aws/bootstrap/bootstrap_webserver.sh for how the docker container is 
-# run.
-CMD ['/opt/start_webserver.sh']
+# docker run -P \
+#   -v /containers/$PROJECT/host/:/host/ \
+#   -e DJANGO_CONFIG_URI=s3://$PROJECT/config/prod.py \
+#   $IMAGE_NAME
+
+CMD ["/opt/start_webserver.sh"]
