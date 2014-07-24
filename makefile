@@ -28,7 +28,7 @@ install_dependencies:
 	# We need to install the setup.py in www so py.test runs with the right 
 	# python path.
 	pip install -e www
-	pip install -r www/deploy/requirements.txt
+	pip install -r deploy/requirements/base.txt
 
 remove_db:
 	python www/manage.py reset_db --router=default --noinput

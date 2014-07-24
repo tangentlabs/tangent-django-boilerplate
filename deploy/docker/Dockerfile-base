@@ -30,5 +30,5 @@ RUN pip install -U pip
 #ADD deploy/shared/machine_ssh.key /root/.ssh/id_rsa
 
 # Install Python deps
-ADD deploy/shared/requirements.txt /opt/requirements.txt
+ADD deploy/requirements/base.txt /opt/requirements.txt
 RUN pip install -r /opt/requirements.txt
