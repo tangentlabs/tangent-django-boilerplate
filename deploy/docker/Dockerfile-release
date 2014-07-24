@@ -30,5 +30,5 @@ EXPOSE 80
 #   -v /containers/$PROJECT/host/:/host/ \
 #   -e DJANGO_CONFIG_URI=s3://$PROJECT/config/prod.py \
 #   $IMAGE_NAME
-
+ 
 CMD ["/opt/start_webserver.sh"]

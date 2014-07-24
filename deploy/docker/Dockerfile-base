@@ -16,7 +16,6 @@ RUN apt-get install -y build-essential libfreetype6-dev libjpeg-dev \
     libpng12-dev libxml2-dev libxslt-dev nginx python-dev python-pip \
     supervisor vim zlib1g-dev
 RUN apt-get clean && apt-get autoclean
-RUN pip install -U pip
 
 ############# Tangent Machine User SSH Key ################
 # In most instances the machine-user SSH key is required  #
