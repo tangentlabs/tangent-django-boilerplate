@@ -11,6 +11,7 @@ location = lambda *path: os.path.join(
 
 DEBUG = False
 
+# TODO Ensure the correct mailing list is specified here
 ADMINS = (
     ('Alerts', 'alerts.{{ project_code }}@{{ domain }}'),
 )
@@ -179,6 +180,7 @@ CACHES = {
     }
 }
 
+
 def create_logging_dict(root):
     """
     Create a logging dict using the passed root for log files
@@ -263,6 +265,10 @@ def create_logging_dict(root):
         }
     }
 
+# Aside from local development, we run within a Docker container which has a
+# volume mounted at /host/. We default to logging within there.
+LOGGING = create_logging_dict('/host/logs')
+
 # Debug toolbar settings
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 INTERNAL_IPS = ('127.0.0.1',)
@@ -274,7 +280,7 @@ RAVEN_CONFIG = {
 }
 
 # Oscar settings
-from oscar.defaults import *
+from oscar.defaults import *  # noqa
 
 OSCAR_ALLOW_ANON_CHECKOUT = True
 OSCAR_SHOP_NAME = '{{ client }}'

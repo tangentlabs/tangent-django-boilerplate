@@ -15,9 +15,6 @@
 #
 # This script is intended to be fairly project agnostic. Project-specific stuff is generally held in the
 # Stage 2 script.
-#
-# TODO:
-#   - Get this script working with Zabbix
 
 set -x  # Debug mode
 set -e  # Fail fast

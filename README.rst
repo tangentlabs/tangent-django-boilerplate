@@ -8,6 +8,9 @@ is created.
 
 .. _`tangent-django-boilerplate`: https://github.com/tangentlabs/tangent-django-boilerplate
 
+Usage
+-----
+
 Use this project with Django's ``startproject`` command::
 
     $ django-admin.py startproject $PROJECT_NAME \
@@ -24,36 +27,42 @@ Note that you need to specify a name for the project and pass the following vari
 
 * ``timezone`` - Which timezone to use in ``settings.py``
 
+* ``language_code`` - Which timezone to use in ``settings.py``
+
 Tangent developers can use the `tangent-kickstart`_ tool to simplify creation
 of projects that conform to our conventions:
 
 .. _`tangent-kickstart`: https://github.com/tangentlabs/tangent-kickstart
 
-The below copy contains template variables - it gets merged with a context
-when a new boilerplate project is created.
+Once a new project is created, there are a number of details that need
+completing. These are marked with `TODO` markers - find them like so::
+
+    $ grep -rnH TODO .
+
+TODO: Delete above section and complete details below
 
 =============
 Project title
 =============
 
-*<Describe the purpose of this project. What problem is it trying to solve.>*
+*<TODO: Describe the purpose of this project. What problem is it trying to solve.>*
 
-*<Describe any third party integrations.>*
+*<TODO: Describe any third party integrations.>*
 
 Status
 ------
 
-*<Set project up on Travis to get the correct token for the below image>*
+*<TODO: Set project up on Travis to get the correct token for the below image>*
 
 .. image:: https://magnum.travis-ci.com/tangentlabs/{{ client }}_{{ project_code }}.png?token=&branch=master   
    :target: https://magnum.travis-ci.com/tangentlabs/{{ client }}_{{ project_code }}
 
-*<Set project up on Sentry and include URL here>*
+*<TODO: Set project up on Sentry and include URL here>*
 
 Communication
 -------------
 
-*<List mailing lists and any other channels for project communication>*
+*<TODO: Create project mailing lists and detail them here>*
 
 For developers
 --------------
@@ -117,23 +126,23 @@ Deployment uses Fabric_. There are helper scripts for each environment::
 For testers
 -----------
 
-*<List information that testers will need to know such as testing bankcard
+*<TODO: List information that testers will need to know such as testing bankcard
 numbers.>*
 
 Infrastructure
 --------------
 
-*<Describe the infrastructure for this project, covering webservers, databases
+*<TODO: Describe the infrastructure for this project, covering webservers, databases
 and other services (eg Solr, RabbitMQ). Include versions>*
 
-*<List the IP addresses of each server used by this project and any HTTP basic
+*<TODO: List the IP addresses of each server used by this project and any HTTP basic
 auth credentials>*
 
 Notes
 -----
 
-*<Describe any gotchas or unusual parts of the codebase. Assume the person who
+*<TODO: Describe any gotchas or unusual parts of the codebase. Assume the person who
 will take over this project from you is a serial killer who knows where you
 live.>*
 
-*<Describe the reasoning behind major design decisions>*
+*<TODO: Describe the reasoning behind major design decisions>*

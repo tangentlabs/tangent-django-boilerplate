@@ -1,6 +1,6 @@
 from conf.default import *  # noqa
 
-# The production database will be on RDS
+# TODO Configure an RDS database and enter details here
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -14,8 +14,8 @@ DATABASES = {
 
 EMAIL_SUBJECT_PREFIX = '[{{ project_code }}][Prod] '
 
-# Insert production hostname here!
+# TODO: Insert production hostname here!
 ALLOWED_HOSTS = ['']
 
-# Create a new project on Sentry to get the DSN value to put here.
+# TODO: Create a new project on Sentry and enter the DSN here
 RAVEN_CONFIG['dsn'] = ''

@@ -11,6 +11,7 @@ location = lambda *path: os.path.join(
 
 DEBUG = False
 
+# TODO Ensure the correct mailing list is specified here
 ADMINS = (
     ('Alerts', 'alerts.{{ project_code }}@{{ domain }}'),
 )
