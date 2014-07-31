@@ -11,20 +11,20 @@
 # ===================================================================
 
 # Set your project name here
-PROJECT=
+PROJECT=boilerplate
 
-# Role of this container (eg webserver, search)
+# Role of this container (eg webserver, search, queue)
 ROLE=webserver
 
 # This is the Docker Image Tag you want to pull
-RELEASE_VERSION=latest
+TAG=latest
 
 # What is the address to configure the nginx vhost on to listen
 # for?
 HOSTNAMES=
 
 # Docker Repository to pull the image from
-DOCKER_IMAGE_NAME=docker.tangentlabs.co.uk/${PROJECT}-release-${ROLE}:${RELEASE_VERSION}
+DOCKER_IMAGE_NAME=docker.tangentlabs.co.uk/${PROJECT}-release-${ROLE}:${TAG}
 
 # S3 URI for htaccess file should it be needed. Leave empty to ignore password
 # protection for the site.
@@ -42,12 +42,12 @@ exec 2>&1
 HOST_SHARED_FOLDER="/containers/${PROJECT}-${ROLE}"
 mkdir -p "$HOST_SHARED_FOLDER/logs"
 
-# Fetch and run the docker image
+# Fetch and run the docker image, passing in the S3 location of the
+# production settings file.
 docker pull ${DOCKER_IMAGE_NAME}
-DOCKER_CONTAINER_NAME="$ROLE-$RELEASE_VERSION"
+DOCKER_CONTAINER_NAME="$PROJECT-$ROLE-$TAG"
 docker run -d -p 80 --name $DOCKER_CONTAINER_NAME \
            -v $HOST_SHARED_FOLDER:/host \
-           -e UWSGI_INI_URI=s3://${PROJECT}/config/uwsgi.ini \
            -e DJANGO_CONFIG_URI=s3://${PROJECT}/config/prod.py \
            ${DOCKER_IMAGE_NAME}
 

@@ -17,9 +17,6 @@ case $ENVIRONMENT in
             exit 1
         fi
         aws s3 cp stage/stage.py s3://${STAGE_BUCKET}/config/stage.py
-        aws s3 cp stage/supervisor.conf s3://${STAGE_BUCKET}/config/supervisor.conf
-        aws s3 cp stage/cron.ini s3://${STAGE_BUCKET}/config/cron.ini
-        aws s3 cp stage/uwsgi.ini s3://${STAGE_BUCKET}/config/uwsgi.ini
         exit 0
     ;;
 
@@ -29,9 +26,6 @@ case $ENVIRONMENT in
             exit 1
         fi
         aws s3 cp /prod/prod.py s3://${STAGE_BUCKET}/config/prod.py
-        aws s3 cp /prod/supervisor.conf s3://${STAGE_BUCKET}/config/supervisor.conf
-        aws s3 cp /prod/cron.ini s3://${STAGE_BUCKET}/config/cron.ini
-        aws s3 cp /prod/uwsgi.ini s3://${STAGE_BUCKET}/config/uwsgi.ini
         exit 0
     ;;
 

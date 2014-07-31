@@ -12,7 +12,6 @@ set -e  # Fail fast
 # Ensure the Dockerfile symlink is removed if an EXIT signal is raised
 trap "[[ -h Dockerfile ]] && unlink Dockerfile" EXIT
 
-
 # Ensure script is called correctly
 usage() {
     echo $1

@@ -112,15 +112,6 @@ echo "Starting container: `date`"
 # Retrieve Django conf and save it to a known location
 get_file DJANGO_CONFIG_URI $DJANGO_CONFIG_URI /var/www/conf/docker.py
 
-# If UWSGI_INI_URI was specified, download the file
-[ -n "${UWSGI_INI_URI}" ] && get_file UWSGI_INI_URI $UWSGI_INI_URI /var/www/wsgi/uwsgi.ini
-
-# If CRON_INI_URI was specified, download the file
-[ -n "${CRON_INI_URI}" ] && get_file CRON_INI_URI $CRON_INI_URI /var/www/wsgi/cron.ini
-
-# If SUPERVISOR_CONFIG_URI was specified, download the file
-[ -n "${SUPERVISOR_CONFIG_URI}" ] && get_file SUPERVISOR_CONFIG_URI $SUPERVISOR_CONFIG_URI /etc/supervisor/conf.d/app.py
-
 echo "Updating database schema"
 cd /var/www/
 DJANGO_CONF=conf.docker ./manage.py syncdb --noinput
