@@ -604,7 +604,7 @@ Once the image has been pushed to the remote repository it can then be deployed 
  3. Select the latest Ubuntu 14.04 EBS-backed Paravirtualised AMI (``ami-896c96fe`` as of writing)
  4. Select the required instance type and click **Next: Configure Instance Details**
  5. Expand the section called **Advanced Details**
- 6. Under “user-data” copy and paste your projects ``user-data.txt`` file (an example should be under ``deploy/aws/user-data.txt`` in your project tree).
+ 6. Under “user-data” copy and paste your projects ``user-data.sh`` file (an example should be under ``deploy/aws/user-data.sh`` in your project tree).
  7. Configure the rest of the VM options available on this page and click **Next: Add Storage**.
  8. Add additional storage if needed and press **Next: Tag Instance**
  9. Add a **Name** tag and set an appropriate value so the instance can be identified
@@ -619,7 +619,7 @@ The next phase of deployment is heavily automated though, depending on your spec
 
 The automation scripts can be broken down into the following types:
 
- 1. Bootstrap Stage #1 (EC2 + user-data.txt)
+ 1. Bootstrap Stage #1 (EC2 + user-data.sh)
  2. Bootstrap Stage #2 (Bash script run on boot of the instance)
  3. Docker Container Startup
 

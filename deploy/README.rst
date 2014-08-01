@@ -5,7 +5,7 @@ AWS and Docker
 Stage 1 bootstrap
 -----------------
 
-File: ``deploy/aws/bootstrap/user-data.txt``
+File: ``deploy/aws/bootstrap/user-data.sh``
 
 This bootstrap file is responsible for project-agnostic configuration of the
 host EC2 instance. The content of this file need to be set as "user-data"
@@ -28,7 +28,7 @@ This bootstrap file is responsible for:
 Stage 2 bootstrap
 -----------------
 
-File: ``deploy/aws/bootstrap/webserver.sh``
+File: ``deploy/aws/bootstrap/bootstrap_webserver.sh``
 
 This bootstrap file is responsible for project-specific configuration of the
 host EC2 instance. This file needs to be uploaded to S3 and have its S3 URL set
