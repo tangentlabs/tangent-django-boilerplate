@@ -17,7 +17,7 @@ RUN chmod +x /opt/start_webserver.sh
 EXPOSE 80
 
 # Default command to run. Note that this script requires several environmental
-# variables to be passed in order for it to run. On an VM, use something like:
+# variables to be passed in order for it to run. On a VM, use something like:
 #
 # docker run -P \
 #   -v /containers/$PROJECT/host/:/host/ \
