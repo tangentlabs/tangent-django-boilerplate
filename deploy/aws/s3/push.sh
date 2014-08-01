@@ -16,7 +16,9 @@ case $ENVIRONMENT in
             printf "\nSTAGE_BUCKET variable not set. Exiting....\n\n"
             exit 1
         fi
-        aws s3 cp stage/stage.py s3://${STAGE_BUCKET}/config/stage.py
+        aws s3 cp bootstrap/base.sh s3://${STAGE_BUCKET}/bootstrap/base.sh
+        aws s3 cp bootstrap/webserver.sh s3://${STAGE_BUCKET}/bootstrap/webserver.sh
+        aws s3 cp conf/stage.py s3://${STAGE_BUCKET}/conf/stage.py
         exit 0
     ;;
 
@@ -25,7 +27,9 @@ case $ENVIRONMENT in
             printf "\nPROD_BUCKET variable not set. Exiting....\n\n"
             exit 1
         fi
-        aws s3 cp /prod/prod.py s3://${STAGE_BUCKET}/config/prod.py
+        aws s3 cp bootstrap/base.sh s3://${STAGE_BUCKET}/bootstrap/base.sh
+        aws s3 cp bootstrap/webserver.sh s3://${STAGE_BUCKET}/bootstrap/webserver.sh
+        aws s3 cp conf/prod.py s3://${STAGE_BUCKET}/conf/prod.py
         exit 0
     ;;
 
