@@ -4,6 +4,12 @@ AWS
 
 This folder houses the appropriate files needs for AWS.
 
+IAM
+---
+
+Each EC2 instance needs an IAM role to define which other services it can
+access. Policy JSON files are defined in ``iam/`` for help.
+
 Bootstrapping
 -------------
 
