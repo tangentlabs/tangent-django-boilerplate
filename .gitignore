@@ -27,3 +27,6 @@ www/public/media
 
 # Machine User Keys
 deploy/shared/machine_ssh.key
+
+# Foreman-style env files
+www/.env

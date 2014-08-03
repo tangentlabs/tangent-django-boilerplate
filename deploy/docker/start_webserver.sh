@@ -1,53 +1,19 @@
 #!/bin/bash
 #
-# Webserver setup/start script for Docker
+# Webserver start-up script for Docker container
 #
-# This script takes arguments via BASH environment variables and
-# is capable of extension to include other customer functionality
-# on a per-project basis.
+# The environmental variables parsed by this script are:
 #
-# The BASH variables currently parsed by this script are:
-#
-#     DJANGO_CONFIG_URI (required)
-#         An S3/HTTP/HTTPS URI or a file that has been
-#         exposed to the container through the /host/ mount
-#         point. Parsed by get_file() function bellow.
-#
-#         Examples:
-#             ./deploy/aws/config/stage/stage.py
-#             ./deploy/aws/config/prod/prod.py
-#
-#     UWSGI_INI_URI (optional)
-#         S3/HTTP/HTTPS or /host/ reference to a custom
-#         Uwsgi ini file used for booting your application
-#
-#         Example:
-#             ./deploy/aws/config/stage/uwsgi.ini
-#
-#     CRON_INI_URI (optional)
-#         S3/HTTP/HTTPS or /host/ reference to a custom cron
-#         INI file. Cron is performed using the Uwsgi
-#         "unique-cron" function, so the INI file needs to
-#         be in Uwsgi INI format.
-#
-#         Example:
-#             ./deploy/aws/config/stage/cron.ini
-#
-#     SUPERVISOR_CONFIG_URI (optional)
-#         S3/HTTP/HTTPS or /host/ reference to a customer
-#         supervisor configuration file. Can be used to
-#         overwrite the default behaviour configured in
-#         /etc/supervisor/conf.d/app.conf
-#
-#         Example:
-#             ./deploy/shared/supervisor.app.conf
-
+# DJANGO_ENV_URI (required)
+#     An S3/HTTP/HTTPS URI or a file that has been
+#     exposed to the container through the /host/ mount
+#     point. Parsed by get_file() function below.
 
 # Helper Functions
 
 function error() {
-    # Print an error message and exit with error (1)
-    printf "$1\n\nExiting.....\n\n"
+    # Print an error message and exit with non-zero exit code
+    printf "Error: $1\n" 1>&2
     exit 1
 }
 
@@ -103,21 +69,23 @@ set -e  # Fail fast
 exec 1> >(tee -a /host/logs/container_startup.log)
 exec 2>&1
 
+# When the container starts is useful audit information
 echo
 echo "Starting container: `date`"
 
-# Check that DJANGO_URI was specified or exit with error
-[ -z "${DJANGO_CONFIG_URI}" ] && error "DJANGO_CONFIG_URI cannot be empty"
+# Check that an env file was specified
+[ -z "${DJANGO_ENV_URI}" ] && error "A DJANGO_ENV_URI env variable must be specified"
 
-# Retrieve Django conf and save it to a known location
-get_file DJANGO_CONFIG_URI $DJANGO_CONFIG_URI /var/www/conf/docker.py
+# Fetch env conf
+get_file DJANGO_ENV_URI $DJANGO_ENV_URI /var/www/.env
 
 echo "Updating database schema"
 cd /var/www/
-DJANGO_CONF=conf.docker ./manage.py syncdb --noinput
-DJANGO_CONF=conf.docker ./manage.py migrate
+./manage.py syncdb --noinput
+./manage.py migrate
 
 echo "Collecting static files"
-DJANGO_CONF=conf.docker ./manage.py collectstatic --noinput
+./manage.py collectstatic --noinput
 
+echo "Starting supervisord"
 supervisord -n 

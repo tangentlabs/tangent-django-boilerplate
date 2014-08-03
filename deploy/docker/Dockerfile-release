@@ -1,14 +1,14 @@
-# Best to extend a tagged release of the base box (not latest)
+# TODO Extend the appropriate base image for this project
 FROM boilerplate-base:latest
 
 # Add codebase
 ADD www /var/www
 
-# Add a supervisor script that will run our app and supporting
+# Deploy a supervisor script that will run our app and supporting
 # services
 ADD deploy/supervisor/app.conf /etc/supervisor/conf.d/
 
-# Add our Docker start-up script and make it executable
+# Add the Docker start-up script and make it executable
 ADD deploy/docker/start_webserver.sh /opt/start_webserver.sh
 RUN chmod +x /opt/start_webserver.sh
 
@@ -17,18 +17,27 @@ RUN chmod +x /opt/start_webserver.sh
 EXPOSE 80
 
 # Default command to run. Note that this script requires several environmental
-# variables to be passed in order for it to run. On a VM, use something like:
+# variables to be passed in order for it to run. 
 #
-# docker run -P \
-#   -v /containers/$PROJECT/host/:/host/ \
-#   -e DJANGO_CONFIG_URI=/var/www/conf/test.py \
-#   $IMAGE_NAME
+# Locally, use:
 #
-# To run on AWS, use:
+#     docker run -P \
+#       -v /tmp/:/host/ \
+#       -e DJANGO_ENV_URI=/var/www/env/local \
+#       $IMAGE_NAME
+#
+# On a (non-AWS) VM, use:
+#
+#     docker run -P \
+#       -v /containers/$PROJECT/:/host/ \
+#       -e DJANGO_ENV_URI=/host/env/test \
+#       $IMAGE_NAME
+#
+# To run on an AWS EC2, use:
 # 
-# docker run -P \
-#   -v /containers/$PROJECT/host/:/host/ \
-#   -e DJANGO_CONFIG_URI=s3://$PROJECT/config/prod.py \
-#   $IMAGE_NAME
+#     docker run -P \
+#       -v /containers/$PROJECT/:/host/ \
+#       -e DJANGO_ENV_URI=s3://$PROJECT/env/prod \
+#       $IMAGE_NAME
  
 CMD ["/opt/start_webserver.sh"]

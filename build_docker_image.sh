@@ -1,10 +1,10 @@
 #!/bin/bash
 # 
-# Build a docker image ready for deployment
+# Build a docker image
 #
 # This script symlinks in the appropriate Dockerfile then builds the image.
 
-# Set project name
+# TODO Set project name
 PROJECT_NAME=boilerplate
 
 set -e  # Fail fast
@@ -14,12 +14,15 @@ trap "[[ -h Dockerfile ]] && unlink Dockerfile" EXIT
 
 usage() {
     echo $1
-    echo "Usage: $0 [base|dev|release] [TAG|VERSION]"
+    echo "Usage: $0 [base|dev|release] [TAG]"
     exit 1
 }
 
 # Ensure script is called correctly
 [[ -z $1 ]] && usage "Missing image type"
+
+# Remove symlink of env variables
+[[ -h www/.env ]] && unlink www/.env
 
 IMAGETYPE=$1
 TAG=${2:-latest}
@@ -31,7 +34,8 @@ case $IMAGETYPE in
             echo "Missing $IMAGETYPE Dockerfile ($DOCKERFILE)"
             exit 1
         else 
-            # Symlink the appropriate Dockerfile into place and run 'docker build'
+            # Symlink the appropriate Dockerfile into place and run 'docker
+            # build'
             ln -sf $DOCKERFILE Dockerfile
             DOCKER_TAG="$PROJECT_NAME-$IMAGETYPE:$TAG"
             printf "Building Docker image $DOCKER_TAG\n\n"
@@ -39,6 +43,6 @@ case $IMAGETYPE in
         fi
     ;;
     *)
-        usage "Unknown image type"
+        usage "Unknown image type '$IMAGETYPE'"
     ;;
 esac

@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Push config files to S3
+# Push bootstrap files to S3
 
 set -e  # Fail fast
 
@@ -18,7 +18,6 @@ case $ENVIRONMENT in
         fi
         aws s3 cp bootstrap/base.sh s3://${STAGE_BUCKET}/bootstrap/base.sh
         aws s3 cp bootstrap/webserver.sh s3://${STAGE_BUCKET}/bootstrap/webserver.sh
-        aws s3 cp conf/stage.py s3://${STAGE_BUCKET}/conf/stage.py
         exit 0
     ;;
 
@@ -29,7 +28,6 @@ case $ENVIRONMENT in
         fi
         aws s3 cp bootstrap/base.sh s3://${STAGE_BUCKET}/bootstrap/base.sh
         aws s3 cp bootstrap/webserver.sh s3://${STAGE_BUCKET}/bootstrap/webserver.sh
-        aws s3 cp conf/prod.py s3://${STAGE_BUCKET}/conf/prod.py
         exit 0
     ;;
 

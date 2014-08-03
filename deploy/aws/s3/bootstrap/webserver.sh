@@ -3,10 +3,11 @@
 # Bootstrap script for a webserver
 #
 # This file is just an example - it is intended to be customised for your project.
+# TODO Customise this file for your project
 # 
 # When ready, this file should be uploaded to S3 so it can be downloaded and
-# executed by the Stage 1 bootstrap script. It's S3 location will need to be set as a tag
-# against the EC2 instance.
+# executed by the Stage 1 bootstrap script. Its S3 location will need to be set
+# as a tag against the EC2 instance.
 
 # ===================================================================
 
@@ -41,7 +42,7 @@ exec 2>&1
 # between the host and the container
 HOST_SHARED_FOLDER="/containers/${PROJECT}-${ROLE}"
 echo "Creating $HOST_SHARED_FOLDER"
-mkdir -p "$HOST_SHARED_FOLDER/logs"
+mkdir -p "$HOST_SHARED_FOLDER"
 
 # Fetch and run the docker image, passing in the S3 location of the
 # production settings file.
@@ -52,14 +53,14 @@ DOCKER_CONTAINER_NAME="$PROJECT-$ROLE-$TAG"
 echo "Running docker container"
 docker run -d -p 80 --name $DOCKER_CONTAINER_NAME \
            -v $HOST_SHARED_FOLDER:/host \
-           -e DJANGO_CONFIG_URI=s3://${PROJECT}/config/prod.py \
+           -e DJANGO_ENV_URI=s3://${PROJECT}/env/prod \
            ${DOCKER_IMAGE_NAME}
 
 # Port 80 inside the container will be bound to a random
 # port on the host. Find out what it is!
 DOCKER_PORT=$(docker port $DOCKER_CONTAINER_NAME 80)
 
-# This may be redundant, but it will ensure nginx is installed
+# Ensure nginx is installed
 apt-get install -y nginx
 find /etc/nginx/sites-enabled/ -type f -delete
 [ -n "$HTACCESS_FILE" ] && aws s3 cp $HTACCESS_FILE /etc/nginx/htpasswd

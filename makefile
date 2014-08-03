@@ -1,11 +1,15 @@
 # Build a working version of the project
-build: clean virtualenv database
+build: clean virtualenv env database
 
 # Update the virtualenv
 virtualenv: install_dependencies
 
 # Create a database populated with data
 database: remove_db create_db load_fixtures
+
+# Ensure there is a .env file in place
+env:
+	-[[ ! -L www/.env ]] && ln -s ../deploy/env/local www/.env
 
 # Run Django's server on a random port
 run:

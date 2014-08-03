@@ -2,8 +2,8 @@
 #
 # Initial bootstrap script for an EC2 instance.
 #
-# The contents of this file need to be stored against the created EC2 instance as "user data".
-# See http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html
+# The contents of this file need to be stored against the created EC2 instance
+# as "user data". See http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html
 
 BUCKET=tangent-boilerplate
 ITEMS=(
