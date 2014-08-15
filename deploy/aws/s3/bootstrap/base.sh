@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Base bootstrapping script which should be applicable for all types of EC2
-# instance
+# instance.
 #
 # This script installs
 #   - Docker
