@@ -3,7 +3,7 @@
 # Bootstrap script for a webserver
 #
 # This script is intended to be called by the user data script from an EC2
-# instance (as it requires the BUCKET_URL env variable to be set). This script
+# instance (as it requires the S3_BUCKET_URL env variable to be set). This script
 # fetches 3 things that it needs to run the appropriate docker container:
 #
 # s3://$bucket/release/docker_image  -  A text file whose contents are a Docker
@@ -22,19 +22,19 @@ exec 1> >(tee -a /var/log/bootstrap.webserver.log)
 exec 2>&1
 
 # Determine docker image name from a S3 file
-IMAGE_S3_PATH="$BUCKET_URL/release/docker_image"
+IMAGE_S3_PATH="$S3_BUCKET_URL/release/docker_image"
 echo "Fetching $IMAGE_S3_PATH"
 aws s3 cp $IMAGE_S3_PATH /tmp/docker_image
 DOCKER_IMAGE=$(cat /tmp/docker_image)
 
 # Determine hostnames from a S3 file
-IMAGE_S3_PATH="$BUCKET_URL/release/hostnames"
+IMAGE_S3_PATH="$S3_BUCKET_URL/release/hostnames"
 echo "Fetching $IMAGE_S3_PATH"
 aws s3 cp $IMAGE_S3_PATH /tmp/hostnames
 HOSTNAMES=$(cat /tmp/hostnames)
 
 # Fetch sensitive env variables from S3
-ENV_S3_PATH="$BUCKET_URL/release/env"
+ENV_S3_PATH="$S3_BUCKET_URL/release/env"
 echo "Fetching $IMAGE_S3_PATH"
 aws s3 cp $IMAGE_S3_PATH /host/env
 
