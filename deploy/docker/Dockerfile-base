@@ -13,7 +13,7 @@ RUN update-locale LANG=en_GB.UTF-8
 # Install common packages
 RUN apt-get update
 RUN apt-get install -y build-essential libfreetype6-dev libjpeg-dev \
-    libpng12-dev libxml2-dev libxslt-dev nginx python-dev python-pip \
+    libpng12-dev libxml2-dev libxslt-dev python-dev python-pip \
     supervisor vim zlib1g-dev
 RUN apt-get clean && apt-get autoclean
 
@@ -28,6 +28,6 @@ RUN apt-get clean && apt-get autoclean
 ###########################################################
 #ADD deploy/shared/machine_ssh.key /root/.ssh/id_rsa
 
-# Install Python deps
+# Install base Python deps (common to all envs)
 ADD deploy/requirements/base.txt /opt/requirements.txt
 RUN pip install -r /opt/requirements.txt

@@ -1,2 +1,25 @@
-# Best to extend a tagged release of the base box (not latest)
-FROM tangent-django-boilerplate-base:latest
+# Dev project image. This installs dev deps
+
+FROM boilerplate-base:latest
+
+# Install development Python deps
+ADD deploy/requirements/ /opt/requirements/
+RUN pip install -r /opt/requirements/dev.txt
+
+# Add codebase
+ADD www/ /var/www/
+
+# Link env into place
+RUN ln -s /var/www/env/dev /var/www/.env
+
+# Build database 
+RUN /var/www/manage.py syncdb --noinput
+RUN /var/www/manage.py migrate
+
+# Install fixtures
+ADD fixtures/ /opt/fixtures/
+RUN /var/www/manage.py loaddata /opt/fixtures/*.json
+
+EXPOSE 8000
+
+CMD ["/var/www/manage.py", "runserver", "0.0.0.0:8000"]

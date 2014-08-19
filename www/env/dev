@@ -1,0 +1,5 @@
+ENVIRONMENT=dev
+DEBUG=True
+DATABASE_URL=sqlite:////tmp/db.sqlite
+LOG_ROOT=/tmp/
+CACHED_TEMPLATE_LOADER=False

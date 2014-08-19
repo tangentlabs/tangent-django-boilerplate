@@ -13,6 +13,13 @@
 import os
 import sys
 
+# Check the requirement env variables have been passed in
+required_vars = (
+    'ENVIRONMENT', 'DEBUG', 'DATABASE_URL',
+    'LOG_ROOT')
+for name in required_vars:
+    assert name in os.environ, "Missing '%s' env variable!" % name
+
 # Helper function to determine the absolute path of a file
 location = lambda *path: os.path.join(
     os.path.dirname(os.path.realpath(__file__)), *path)
@@ -267,7 +274,7 @@ LOGGING = create_logging_dict(env('LOG_ROOT', '/host/logs'))
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 INTERNAL_IPS = ('127.0.0.1',)
 
-ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split()
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split()
 
 # Raven settings (for Sentry)
 RAVEN_CONFIG = {
