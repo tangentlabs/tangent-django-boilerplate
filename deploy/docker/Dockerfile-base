@@ -1,8 +1,8 @@
 # Base image for project. The idea is that this one does not change 
 # very often.
 
-# Use pre-packaged base box from internal registry
-FROM docker-internal.tangentuk.local/tangent-12.04:latest
+# Use standard Ubuntu image
+FROM ubuntu:14.04
 
 # Set locale information correctly as it can have adverse effects on software
 # inside the container
