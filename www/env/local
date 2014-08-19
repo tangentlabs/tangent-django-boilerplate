@@ -1,4 +1,4 @@
+ENVIRONMENT=Local
 DEBUG=True
 DATABASE_URL=sqlite:////tmp/db.sqlite
-ALLOWED_HOSTS=''
 LOG_ROOT=/tmp/

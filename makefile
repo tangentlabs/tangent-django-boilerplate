@@ -9,7 +9,7 @@ database: remove_db create_db load_fixtures
 
 # Ensure there is a .env file in place
 env:
-	-[[ ! -L www/.env ]] && ln -s ../deploy/env/local www/.env
+	-[[ ! -L www/.env ]] && ln -s env/local www/.env
 
 # Run Django's server on a random port
 run:
@@ -32,7 +32,7 @@ install_dependencies:
 	# We need to install the setup.py in www so py.test runs with the right 
 	# python path.
 	pip install -e www
-	pip install -r deploy/requirements/base.txt
+	pip install -r deploy/requirements/dev.txt
 
 remove_db:
 	python www/manage.py reset_db --router=default --noinput

@@ -1,3 +1,8 @@
+# Read environmental variables from a local file (.env)
+# See https://github.com/jacobian/django-dotenv
+import dotenv
+dotenv.read_dotenv()
+
 from settings import *  # noqa
 
 DATABASES = {
