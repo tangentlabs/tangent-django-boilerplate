@@ -1,5 +1,6 @@
-ENVIRONMENT=dev
+ENVIRONMENT=Dev
 DEBUG=True
+SECRET_KEY=s3cr3tk3y4d3v
 DATABASE_URL=sqlite:////tmp/db.sqlite
 LOG_ROOT=/tmp/
 CACHED_TEMPLATE_LOADER=False

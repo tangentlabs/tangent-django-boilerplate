@@ -15,8 +15,7 @@ import sys
 
 # Check the requirement env variables have been passed in
 required_vars = (
-    'ENVIRONMENT', 'DEBUG', 'DATABASE_URL',
-    'LOG_ROOT')
+    'ENVIRONMENT', 'DATABASE_URL', 'LOG_ROOT', 'SECRET_KEY')
 for name in required_vars:
     assert name in os.environ, "Missing '%s' env variable!" % name
 
@@ -29,7 +28,7 @@ env = lambda key, default: os.environ.get(key, default)
 
 # The "name" of the current environment. Usually one of "dev", "test", "stage"
 # or "prod".
-ENVIRONMENT = env('ENVIRONMENT', 'local').lower()
+ENVIRONMENT = os.environ['ENVIRONMENT']
 
 DEBUG = bool(env('DEBUG', False))
 TEMPLATE_DEBUG = DEBUG
@@ -114,7 +113,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '{{ secret_key }}'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # Use cached template loading by default
 if bool(os.environ.get('CACHED_TEMPLATE_LOADER', True)):
@@ -185,12 +184,13 @@ COMPRESS_OUTPUT_DIR = 'cache'
 COMPRESS_CACHE_KEY_FUNCTION = 'compressor.cache.socket_cachekey'
 COMPRESS_OFFLINE = True
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+if 'CACHE_LOCATION' in os.environ:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': os.environ['CACHE_LOCATION'],
+        }
     }
-}
 
 
 def create_logging_dict(root):
@@ -268,7 +268,7 @@ def create_logging_dict(root):
 
 # Aside from local development, we run within a Docker container which has a
 # volume mounted at /host/. We default to logging within there.
-LOGGING = create_logging_dict(env('LOG_ROOT', '/host/logs'))
+LOGGING = create_logging_dict(os.environ['LOG_ROOT'])
 
 # Debug toolbar settings
 DEBUG_TOOLBAR_PATCH_SETTINGS = False

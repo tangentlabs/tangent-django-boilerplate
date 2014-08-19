@@ -1,4 +1,6 @@
 ENVIRONMENT=Local
 DEBUG=True
+SECRET_KEY=s3cr3tk3y4l0c4l
 DATABASE_URL=sqlite:////tmp/db.sqlite
 LOG_ROOT=/tmp/
+CACHED_TEMPLATE_LOADER=False
