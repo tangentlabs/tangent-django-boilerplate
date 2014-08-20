@@ -105,6 +105,17 @@ def deploy(tag):
         filepath, env.s3_bucket_url))
 
 
+def user_data():
+    """
+    Print the EC2 user data for a given environment
+    """
+    filepath = 'deploy/aws/ec2/user-data.sh'
+    with open(filepath, 'r') as f:
+        content = f.read()
+    content = content.replace('{{ s3_bucket_url }}', env.s3_bucket_url)
+    print content
+
+
 def init_s3():
     """
     Ensure the appropriate bucket is created and populated.

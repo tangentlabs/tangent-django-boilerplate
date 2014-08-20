@@ -7,8 +7,7 @@
 
 set -e
 
-# TODO Set the S3 bucket for this instance
-export S3_BUCKET_URL=
+export S3_BUCKET_URL="{{ s3_bucket_url }}"
 
 # Pretty printing function (so user data output is easier to spot in the system logs)
 function notify() {
@@ -38,11 +37,12 @@ for FILENAME in $BOOTSTRAP_SCRIPTS
 do
     LOCAL_PATH=/tmp/$FILENAME
     S3_PATH=$BOOTSTRAP_URL$FILENAME
-    echo "Downloading $S3_PATH to $LOCAL_PATH"
+    notify "Downloading $S3_PATH to $LOCAL_PATH"
     aws s3 cp --region=$REGION $S3_PATH $LOCAL_PATH
     chmod +x $LOCAL_PATH
     notify "Executing $LOCAL_PATH"
     $LOCAL_PATH
+    notify "Finished executing $LOCAL_PATH"
     rm $LOCAL_PATH
 done
 
