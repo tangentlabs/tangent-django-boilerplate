@@ -8,26 +8,42 @@
 set -e
 
 # TODO Set the S3 bucket for this instance
-export S3_BUCKET_URL=s3://tangent-boilerplate-test
+export S3_BUCKET_URL=
 
-echo "Installing AWS CLI"
+# Pretty printing function (so user data output is easier to spot in the system logs)
+function notify() {
+    local len=$((${#1}+2))
+    printf "\n+"
+    printf -- "-%.0s" $(seq 1 $len)
+    printf "+\n| $1 |\n+"
+    printf -- "-%.0s" $(seq 1 $len)
+    printf "+\n\n"
+}
+
+notify "Bootstrapping starting using $S3_BUCKET_URL"
+
+# Allow child processes to use this function
+export -f notify
+
+notify "Installing AWS CLI"
 apt-get update
 apt-get install -y awscli
 
 # Download and execute each bootstrap file (note they must sort to the correct order)
 BOOTSTRAP_URL="$S3_BUCKET_URL/bootstrap/"  # trailing slash matters!
-echo "Executing all bootstrap scripts within $BOOTSTRAP_URL"
+notify "Executing all bootstrap scripts within $BOOTSTRAP_URL"
 BOOTSTRAP_SCRIPTS=$(aws s3 ls $BOOTSTRAP_URL | awk '/\.sh/ {print $4}' | sort)
-for FILENAME in "${BOOTSTRAP_SCRIPTS[@]}"
+export REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | awk -F\" '{print $4}')
+for FILENAME in $BOOTSTRAP_SCRIPTS
 do
     LOCAL_PATH=/tmp/$FILENAME
     S3_PATH=$BOOTSTRAP_URL$FILENAME
     echo "Downloading $S3_PATH to $LOCAL_PATH"
-    aws s3 cp $S3_PATH $LOCAL_PATH
+    aws s3 cp --region=$REGION $S3_PATH $LOCAL_PATH
     chmod +x $LOCAL_PATH
-    echo "Executing $LOCAL_PATH"
+    notify "Executing $LOCAL_PATH"
     $LOCAL_PATH
     rm $LOCAL_PATH
 done
 
-echo "Bootstrapping complete"
+notify "Bootstrapping complete"

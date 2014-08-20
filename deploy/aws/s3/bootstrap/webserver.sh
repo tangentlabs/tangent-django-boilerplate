@@ -23,27 +23,27 @@ exec 2>&1
 
 # Determine docker image name from a S3 file
 IMAGE_S3_PATH="$S3_BUCKET_URL/release/docker_image"
-echo "Fetching $IMAGE_S3_PATH"
-aws s3 cp $IMAGE_S3_PATH /tmp/docker_image
+notify "Fetching $IMAGE_S3_PATH"
+aws s3 cp --region=$REGION $IMAGE_S3_PATH /tmp/docker_image
 DOCKER_IMAGE=$(cat /tmp/docker_image)
 
 # Determine hostnames from a S3 file
 IMAGE_S3_PATH="$S3_BUCKET_URL/release/hostnames"
-echo "Fetching $IMAGE_S3_PATH"
-aws s3 cp $IMAGE_S3_PATH /tmp/hostnames
+notify "Fetching $IMAGE_S3_PATH"
+aws s3 cp --region=$REGION $IMAGE_S3_PATH /tmp/hostnames
 HOSTNAMES=$(cat /tmp/hostnames)
 
 # Fetch sensitive env variables from S3
 ENV_S3_PATH="$S3_BUCKET_URL/release/env"
-echo "Fetching $IMAGE_S3_PATH"
-aws s3 cp $IMAGE_S3_PATH /host/env
+notify "Fetching $IMAGE_S3_PATH"
+aws s3 cp --region=$REGION $IMAGE_S3_PATH /host/env
 
 # Fetch and run the docker image, passing in the S3 location of the
 # production settings file.
-echo "Pulling docker image '$DOCKER_IMAGE'"
+notify "Pulling docker image '$DOCKER_IMAGE'"
 docker pull $DOCKER_IMAGE
 
-echo "Running docker container"
+notify "Running docker container"
 docker run -d -p 80 --name webserver \
            -v /host:/host \
            -e DJANGO_ENV_URI=/host/env \
