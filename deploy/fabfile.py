@@ -46,11 +46,19 @@ def init_s3():
     local("aws s3 mb %(s3_bucket_url)s" % env)
 
 
+def sync_s3():
+    init_s3()
+    sync_s3_bootstrap_files()
+    sync_s3_release_files()
+
+
 def sync_s3_bootstrap_files():
     init_s3()
     files = local("find aws/s3/bootstrap -type f", capture=True).split()
     for file in files:
-        local("aws s3 cp %s %s/%s" % (file, env.s3_bucket_url, file))
+        filename = os.path.basename(file)
+        local("aws s3 cp %s %s/bootstrap/%s" % (
+            file, env.s3_bucket_url, filename))
 
 
 def sync_s3_release_files():
@@ -59,4 +67,5 @@ def sync_s3_release_files():
     # contain sensitive variables.
     files = local("find aws/s3/release -type f", capture=True).split()
     for file in files:
-        local("aws s3 cp %s %s/%s" % (file, env.s3_bucket_url, file))
+        filename = os.path.basename(file)
+        local("aws s3 cp %s %s/release/%s" % (file, env.s3_bucket_url, filename))
