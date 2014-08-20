@@ -28,5 +28,7 @@ www/public/media
 # Machine User Keys
 deploy/shared/machine_ssh.key
 
-# Foreman-style env files
+# Sensitive files (deliberately kept out of source control)
+deploy/aws/s3/bootstrap/dockercfg
+deploy/aws/s3/release/env
 www/.env
