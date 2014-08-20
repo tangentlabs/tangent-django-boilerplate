@@ -2,8 +2,49 @@ import os
 
 from fabric.api import local, env, abort
 
+# Config
+# ------
+
+# TODO Set the client and project for your project
 env.client = 'tangent'
 env.project = 'boilerplate'
+
+
+# Docker tasks
+# ------------
+
+def build_docker_image(image_type=None, tag="latest"):
+    """
+    Build a Docker image
+    """
+    if image_type not in ('base', 'dev', 'release'):
+        abort("Choose one of base, dev or release")
+
+    # Check Dockerfile exists
+    dockerfile = "deploy/docker/Dockerfile-%s" % image_type
+    if not os.path.exists(dockerfile):
+        abort("Dockerfile %s does not exist!" % dockerfile)
+
+    # Remove the www/.env file (if it exists) as we don't want it in the image
+    envfile = "www/.env"
+    if os.path.exists(envfile) and os.path.islink(envfile):
+        local("unlink %s" % envfile)
+
+    # Symlink in the dockerfile and build the container
+    print "Building Docker image '%s' from %s" % (
+        tag, dockerfile)
+    dockerlink = "Dockerfile"
+    if os.path.islink(dockerlink):
+        local("unlink %s" % dockerlink)
+    local("ln -s %s %s" % (dockerfile, dockerlink))
+    local("docker build -t %s ." % tag)
+    local("unlink %s" % dockerlink)
+
+
+# Deployment/AWS tasks
+# --------------------
+
+
 env.build_name = None
 
 
@@ -47,14 +88,20 @@ def init_s3():
 
 
 def sync_s3():
+    """
+    Sync all bootstrap/release files onto S3
+    """
     init_s3()
     sync_s3_bootstrap_files()
     sync_s3_release_files()
 
 
 def sync_s3_bootstrap_files():
+    """
+    Sync bootstrap files onto S3
+    """
     init_s3()
-    files = local("find aws/s3/bootstrap -type f", capture=True).split()
+    files = local("find deploy/aws/s3/bootstrap -type f", capture=True).split()
     for file in files:
         filename = os.path.basename(file)
         local("aws s3 cp %s %s/bootstrap/%s" % (
@@ -62,10 +109,13 @@ def sync_s3_bootstrap_files():
 
 
 def sync_s3_release_files():
+    """
+    Sync release files onto S3
+    """
     init_s3()
     # Some files in the release folder should not be in source control if they
     # contain sensitive variables.
-    files = local("find aws/s3/release -type f", capture=True).split()
+    files = local("find deploy/aws/s3/release -type f", capture=True).split()
     for file in files:
         filename = os.path.basename(file)
         local("aws s3 cp %s %s/release/%s" % (file, env.s3_bucket_url, filename))
