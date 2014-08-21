@@ -48,13 +48,14 @@ def build_docker_image(image_type=None, tag="latest"):
         local("unlink %s" % envfile)
 
     # Symlink in the dockerfile and build the container
+    build_tag = "%s-%s-%s:%s" % (env.client, env.project, image_type, tag)
     notify("Building Docker image '%s' from %s" % (
-        tag, dockerfile))
+        build_tag, dockerfile))
     dockerlink = "Dockerfile"
     if os.path.islink(dockerlink):
         local("unlink %s" % dockerlink)
     local("ln -s %s %s" % (dockerfile, dockerlink))
-    local("docker build -t %s ." % tag)
+    local("docker build -t %s ." % build_tag)
     local("unlink %s" % dockerlink)
 
 
@@ -70,7 +71,7 @@ def _configure(build_name):
     env.s3_bucket_name = '%s-%s-%s' % (
         env.client, env.project, build_name)
     env.s3_bucket_url = 's3://%s' % env.s3_bucket_name
-    env.docker_image = 'docker.tangentlabs.co.uk/%s-%s' % (
+    env.docker_image = 'docker.tangentlabs.co.uk/%s-%s-release' % (
         env.client, env.project)
 
 
