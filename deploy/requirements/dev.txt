@@ -1,9 +1,6 @@
 -r base.txt
 
 # Development packages
-django-debug-toolbar==1.2.1
-django-extensions==1.3.3
-Werkzeug==0.9.4
 flake8==2.1.0
 
 # Testing
