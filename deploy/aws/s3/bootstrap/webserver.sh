@@ -28,15 +28,15 @@ aws s3 cp --region=$REGION $IMAGE_S3_PATH /tmp/docker_image
 DOCKER_IMAGE=$(cat /tmp/docker_image)
 
 # Determine hostnames from a S3 file
-IMAGE_S3_PATH="$S3_BUCKET_URL/release/hostnames"
-notify "Fetching $IMAGE_S3_PATH"
-aws s3 cp --region=$REGION $IMAGE_S3_PATH /tmp/hostnames
+HOSTNAMES_S3_PATH="$S3_BUCKET_URL/release/hostnames"
+notify "Fetching $HOSTNAMES_S3_PATH"
+aws s3 cp --region=$REGION $HOSTNAMES_S3_PATH /tmp/hostnames
 HOSTNAMES=$(cat /tmp/hostnames)
 
 # Fetch sensitive env variables from S3
 ENV_S3_PATH="$S3_BUCKET_URL/release/env"
-notify "Fetching $IMAGE_S3_PATH"
-aws s3 cp --region=$REGION $IMAGE_S3_PATH /host/env
+notify "Fetching $ENV_S3_PATH"
+aws s3 cp --region=$REGION $ENV_S3_PATH /host/env
 
 # Fetch and run the docker image, passing in the S3 location of the
 # production settings file.

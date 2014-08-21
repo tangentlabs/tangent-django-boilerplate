@@ -28,3 +28,4 @@ chmod +x /usr/local/bin/nsenter
 S3_PATH="$S3_BUCKET_URL/bootstrap/dockercfg"
 notify "Fetching Docker config from $S3_PATH"
 aws s3 cp --region=$REGION $S3_PATH /home/ubuntu/.dockercfg
+cp /home/ubuntu/.dockercfg /root/.dockercfg
