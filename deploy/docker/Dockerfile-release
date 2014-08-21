@@ -1,5 +1,5 @@
 # TODO Extend the appropriate base image for this project
-FROM boilerplate-base:latest
+FROM tangent-boilerplate-base:latest
 
 # Add codebase
 ADD www /var/www
