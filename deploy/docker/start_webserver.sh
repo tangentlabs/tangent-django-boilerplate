@@ -15,23 +15,21 @@ function error() {
     exit 1
 }
 
-
 set -e  # Fail fast
 
 # Check that an env file was specified
 [ -z "$DJANGO_ENV_URI" ] && error "A DJANGO_ENV_URI env variable must be specified"
 [ ! -f "$DJANGO_ENV_URI" ] && error "$DJANGO_ENV_URI does not exist"
 
-# When the container starts is useful audit information
-printf "%s - Starting container with DJANGO_ENV_URI=%s" "$(date)" $DJANGO
-echo "Starting container : `date`"
-
-# Ensure there is a folder to log to
-[[ ! -d /host/logs ]] && mkdir -p /host/logs
-
 # Copy all output to file
 exec 1> >(tee -a /host/logs/docker.container_startup.log)
 exec 2>&1
+
+# When the container starts is useful audit information
+printf "\n%s - Starting container with DJANGO_ENV_URI=%s\n" "$(date)" $DJANGO_ENV_URI
+
+# Ensure there is a folder to log to
+[[ ! -d /host/logs ]] && mkdir -p /host/logs
 
 # Fetch env conf
 echo "Copying $DJANGO_ENV_URI to /var/www/.env"
