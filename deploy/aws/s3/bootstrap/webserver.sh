@@ -41,17 +41,15 @@ aws s3 cp --region=$REGION $ENV_S3_PATH /host/env
 # Fetch and run the docker image, passing in the S3 location of the
 # production settings file.
 notify "Pulling docker image '$DOCKER_IMAGE'"
+export HOME=/root/
 docker pull $DOCKER_IMAGE
 
-notify "Running docker container"
-docker run -d -p 80 --name webserver \
-           -v /host:/host \
-           -e DJANGO_ENV_URI=/host/env \
-           $DOCKER_IMAGE_NAME
+notify "Starting docker container from image $DOCKER_IMAGE"
+DOCKER_CONTAINER_ID=$(docker run -d -p 80 -v /host:/host -e DJANGO_ENV_URI=/host/env $DOCKER_IMAGE)
 
 # Port 80 inside the container will be bound to a random
 # port on the host. Find out what it is!
-DOCKER_PORT=$(docker port $DOCKER_CONTAINER_NAME 80)
+DOCKER_PORT=$(docker port $DOCKER_CONTAINER_ID 80)
 
 # Ensure nginx is installed
 echo "Installing nginx to proxy to port $DOCKER_PORT of container"
