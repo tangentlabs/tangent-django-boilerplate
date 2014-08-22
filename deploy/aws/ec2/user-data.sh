@@ -24,6 +24,9 @@ notify "Bootstrapping starting using $S3_BUCKET_URL"
 # Allow child processes to use this function
 export -f notify
 
+# Store S3 bucket location in a file so other (non-child) processes can use it
+echo $S3_BUCKET_URL > /etc/s3_bucket_url
+
 notify "Installing AWS CLI"
 apt-get update
 apt-get install -y awscli
