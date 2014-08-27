@@ -49,6 +49,10 @@ def build_docker_image(image_type=None, tag="latest"):
 
     # Symlink in the dockerfile and build the container
     build_tag = "%s-%s-%s:%s" % (env.client, env.project, image_type, tag)
+    if image_type == 'release':
+        # Prepend registry when creating a release image
+        build_tag = "docker.tangentlabs.co.uk/%s" % build_tag
+
     notify("Building Docker image '%s' from %s" % (
         build_tag, dockerfile))
     dockerlink = "Dockerfile"
