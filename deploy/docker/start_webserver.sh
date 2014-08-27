@@ -42,6 +42,9 @@ cd /var/www/
 echo "Collecting static files"
 ./manage.py collectstatic --noinput
 
+echo "Compressing"
+./manage.py compress
+
 # Ensure log files are writable by uwsgi process
 chown www-data:www-data /host/logs/*.log
 

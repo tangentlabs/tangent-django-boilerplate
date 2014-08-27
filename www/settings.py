@@ -81,11 +81,6 @@ USE_TZ = True
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = location('public/media')
 
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = location('public/static/')
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
@@ -173,7 +168,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Disabled for local but enabled in real envs
-COMPRESS_ENABLED = bool(env('COMPRESS_ENABLED', True))
+COMPRESS_ENABLED = ON_AWS
 COMPRESS_OUTPUT_DIR = 'cache'
 COMPRESS_CACHE_KEY_FUNCTION = 'compressor.cache.socket_cachekey'
 COMPRESS_OFFLINE = True
@@ -279,19 +274,26 @@ RAVEN_CONFIG = {
 # AWS-specific settings
 if ON_AWS:
 
+    AWS_STORAGE_BUCKET_NAME = os.environ['S3_BUCKET_NAME']
+
     # S3 storage
     STATICFILES_STORAGE = 'utils.s3.StaticRootS3BotoStorage'
     DEFAULT_FILE_STORAGE = 'utils.s3.MediaRootS3BotoStorage'
-
-    AWS_STORAGE_BUCKET_NAME = os.environ['S3_BUCKET_NAME']
-    AWS_QUERYSTRING_AUTH = False
+    COMPRESS_STORAGE = STATICFILES_STORAGE
 
     STATIC_URL = "https://%s.s3.amazonaws.com/static/" % AWS_STORAGE_BUCKET_NAME
     MEDIA_URL = "https://%s.s3.amazonaws.com/media/" % AWS_STORAGE_BUCKET_NAME
+    COMPRESS_URL = STATIC_URL
+
+    # Collect static files to a temporary location so compressor can work
+    STATIC_ROOT = COMPRESS_ROOT = "/tmp/"
+
+    AWS_QUERYSTRING_AUTH = False
     AWS_HEADERS = {
         'Expires': 'Thu, 15 Apr 2020 20:00:00 GMT',
         'Cache-Control': 'max-age=86400',
     }
 else:
+    COMPRESS_ROOT = STATIC_ROOT = location('public/static/')
     STATIC_URL = '/static/'
     MEDIA_URL = '/media/'

@@ -1,8 +1,12 @@
 {% load staticfiles %}
+{% load compress %}
 
 <html>
     <head>
         <title>Home</title>
+        {% compress css %}
+        <link rel="stylesheet" type="text/less" href="{{ STATIC_URL }}css/styles.css" />
+        {% endcompress %}
     </head>
     <body>
         <h1>Hello you</h1>
