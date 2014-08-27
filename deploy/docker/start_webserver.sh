@@ -26,14 +26,13 @@ exec 1> >(tee -a /host/logs/docker.container_startup.log)
 exec 2>&1
 
 # When the container starts is useful audit information
-printf "\n%s - Starting container with DJANGO_ENV_URI=%s\n" "$(date)" $DJANGO_ENV_URI
+printf "\n%s - Starting container with DJANGO_ENV_URI=%s\n\n" "$(date)" $DJANGO_ENV_URI
 
 # Ensure there is a folder to log to
 [[ ! -d /host/logs ]] && mkdir -p /host/logs
 
-# Fetch env conf
-echo "Copying $DJANGO_ENV_URI to /var/www/.env"
-cp $DJANGO_ENV_URI /var/www/.env
+echo "Linking /var/www/.env to $DJANGO_ENV_URI"
+ln -s $DJANGO_ENV_URI /var/www/.env
 
 echo "Updating database schema"
 cd /var/www/
@@ -42,6 +41,9 @@ cd /var/www/
 
 echo "Collecting static files"
 ./manage.py collectstatic --noinput
+
+# Ensure log files are writable by uwsgi process
+chown www-data:www-data /host/logs/*.log
 
 echo "Starting supervisord"
 supervisord -n 

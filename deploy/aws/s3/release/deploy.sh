@@ -11,13 +11,14 @@ exec 2>&1
 # Grab S3 bucket URL
 S3_BUCKET_URL=$(cat /etc/s3_bucket_url)
 
-# Fetch region
+# Fetch region (we need it for copying files from S3)
 REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | awk -F\" '{print $4}')
 
 # Grab Docker image string on S3
 TMP_FILE=$(mktemp)
 aws s3 cp --region=$REGION $S3_BUCKET_URL/release/docker_image $TMP_FILE > /dev/null
 S3_DOCKER_IMAGE=$(cat $TMP_FILE)
+rm $TMP_FILE
 
 printf "%s - Docker image is %s\n" "$(date)" $S3_DOCKER_IMAGE
 
@@ -32,6 +33,7 @@ echo "Pulling Docker image $S3_DOCKER_IMAGE"
 docker pull $S3_DOCKER_IMAGE > /dev/null
 
 # Fetch sensitive env variables from S3
+echo "Fetching env file"
 aws s3 cp --region=$REGION $S3_BUCKET_URL/release/env /host/env > /dev/null
 
 echo "Starting Docker container from image $S3_DOCKER_IMAGE"
@@ -44,9 +46,10 @@ DOCKER_PORT=$(docker port $DOCKER_CONTAINER_ID 80 | cut -d":" -f2)
 # Determine hostnames from a S3 file
 aws s3 cp --region=$REGION $S3_BUCKET_URL/release/hostnames /tmp/hostnames > /dev/null
 HOSTNAMES=$(cat /tmp/hostnames)
+rm /tmp/hostnames
     
 # Tweak nginx to talk to new container
-echo "Pointing nginx to port $DOCKER_PORT"
+echo "Pointing nginx to port $DOCKER_PORT for hostnames $HOSTNAMES"
 
 cat > /etc/nginx/sites-enabled/002-docker << EOF
 upstream docker {

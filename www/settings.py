@@ -6,6 +6,7 @@
 # See http://bruno.im/2013/may/18/django-stop-writing-settings-files/
 #
 # TODO Ensure all instances of {{ project_code }} are replaced.
+PROJECT_CODE = ''
 
 # Default settings are secure/production-ready.  Debug settings need to be
 # enabled locally in conf/local.py
@@ -19,6 +20,13 @@ required_vars = (
 for name in required_vars:
     assert name in os.environ, "Missing '%s' env variable!" % name
 
+# The "name" of the current environment. Usually one of "dev", "test", "stage"
+# or "prod".
+ENVIRONMENT = os.environ['ENVIRONMENT']
+
+# All environments apart from "Local" are deployed to AWS
+ON_AWS = os.environ['ENVIRONMENT'].lower() != "local"
+
 # Helper function to determine the absolute path of a file
 location = lambda *path: os.path.join(
     os.path.dirname(os.path.realpath(__file__)), *path)
@@ -26,17 +34,12 @@ location = lambda *path: os.path.join(
 # Helper function for accessing env variables
 env = lambda key, default: os.environ.get(key, default)
 
-# The "name" of the current environment. Usually one of "dev", "test", "stage"
-# or "prod".
-ENVIRONMENT = os.environ['ENVIRONMENT']
-
-DEBUG = bool(env('DEBUG', False))
-TEMPLATE_DEBUG = DEBUG
+TEMPLATE_DEBUG = DEBUG = bool(env('DEBUG', False))
 
 ADMINS = (
     ('Alerts', 'alerts.{{ project_code }}@{{ domain }}'),
 )
-EMAIL_SUBJECT_PREFIX = '[{{ project_code }}][%s] ' % ENVIRONMENT
+EMAIL_SUBJECT_PREFIX = '[%s][%s] ' % (PROJECT_CODE, ENVIRONMENT)
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -78,21 +81,11 @@ USE_TZ = True
 # Example: "/home/media/media.lawrence.com/media/"
 MEDIA_ROOT = location('public/media')
 
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = '/media/'
-PRIVATE_MEDIA_URL = '/media/private/'
-
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = location('public/static/')
-
-# URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
 
 # URL prefix for admin static files -- CSS, JavaScript and images.
 # Make sure to use a trailing slash.
@@ -165,6 +158,7 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django.contrib.staticfiles',
     'south',
+    'storages',
     'django_extensions',
     'debug_toolbar',
     'compressor',
@@ -274,10 +268,30 @@ LOGGING = create_logging_dict(os.environ['LOG_ROOT'])
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 INTERNAL_IPS = ('127.0.0.1',)
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split()
+ALLOWED_HOSTS = env('ALLOWED_HOSTS', '').split()
 
 # Raven settings (for Sentry)
 RAVEN_CONFIG = {
     'dsn': env('RAVEN_DSN', ''),
     'timeout': 5,
 }
+
+# AWS-specific settings
+if ON_AWS:
+
+    # S3 storage
+    STATICFILES_STORAGE = 'utils.s3.StaticRootS3BotoStorage'
+    DEFAULT_FILE_STORAGE = 'utils.s3.MediaRootS3BotoStorage'
+
+    AWS_STORAGE_BUCKET_NAME = os.environ['S3_BUCKET_NAME']
+    AWS_QUERYSTRING_AUTH = False
+
+    STATIC_URL = "https://%s.s3.amazonaws.com/static/" % AWS_STORAGE_BUCKET_NAME
+    MEDIA_URL = "https://%s.s3.amazonaws.com/media/" % AWS_STORAGE_BUCKET_NAME
+    AWS_HEADERS = {
+        'Expires': 'Thu, 15 Apr 2020 20:00:00 GMT',
+        'Cache-Control': 'max-age=86400',
+    }
+else:
+    STATIC_URL = '/static/'
+    MEDIA_URL = '/media/'
