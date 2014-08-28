@@ -8,6 +8,9 @@ ADD www /var/www
 # services
 ADD deploy/supervisor/app.conf /etc/supervisor/conf.d/
 
+# Add cronjobs
+ADD deploy/cron.d/docker /etc/cron.d/
+
 # Add the Docker start-up script and make it executable
 ADD deploy/docker/start_webserver.sh /opt/start_webserver.sh
 RUN chmod +x /opt/start_webserver.sh
