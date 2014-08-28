@@ -3,18 +3,12 @@ from django.contrib import admin
 from django.conf.urls import patterns, include, url
 from django.views import generic
 
-import views
-
 
 admin.autodiscover()
 
 urlpatterns = patterns(
     '',
     (r'^admin/', include(admin.site.urls)),
-
-    # This view allows private files within MEDIA_ROOT to be downloaded
-    url(r'^private-media/(?P<path>.*)$', views.PrivateMediaView.as_view(),
-        name='private-media'),
 
     # An example view for the example tests - replace this when you start work
     # on a real project.
@@ -32,7 +26,8 @@ if settings.DEBUG:
     # maintenance page.
     from django.shortcuts import render
     from django.views import generic
-    urlpatterns += patterns('',
+    urlpatterns += patterns(
+        '',
         url(r'^templates/(?P<template_name>.*)$', render),
         url(r'^styleguide/$', generic.TemplateView.as_view(
             template_name='styleguide.html'))
