@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Bootstrap script for a webserver
+# Bootstrap script for a webserver EC2 instance
 
 set -e  # Fail fast
 

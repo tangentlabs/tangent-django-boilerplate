@@ -24,23 +24,10 @@ EXPOSE 80
 #
 # Locally, use:
 #
-#     docker run -P \
-#       -v /tmp/:/host/ \
-#       -e DJANGO_ENV_URI=/var/www/env/local \
-#       $IMAGE_NAME
-#
-# On a (non-AWS) VM, use:
-#
-#     docker run -P \
-#       -v /containers/$PROJECT/:/host/ \
-#       -e DJANGO_ENV_URI=/host/env/test \
-#       $IMAGE_NAME
+#     docker run -P -v /tmp/:/host/ -e DJANGO_ENV_URI=/var/www/env/local $IMAGE_NAME
 #
 # To run on an AWS EC2, use:
 # 
-#     docker run -P \
-#       -v /containers/$PROJECT/:/host/ \
-#       -e DJANGO_ENV_URI=s3://$PROJECT/env/prod \
-#       $IMAGE_NAME
+#     docker run -P -v /host:/host/ -e DJANGO_ENV_URI=/host/env $IMAGE_NAME
  
 CMD ["/opt/start_webserver.sh"]

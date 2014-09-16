@@ -25,7 +25,7 @@ printf "%s - Docker image is %s\n" "$(date)" $S3_DOCKER_IMAGE
 # Grab running Docker image (will be empty string if no docker container running)
 CURRENT_DOCKER_IMAGE=$(docker ps | tail -n +2 | awk '{print $2}')
 
-# Only deploy if the images differ
+# Exit if the two images are the same
 [ "$S3_DOCKER_IMAGE" == "$CURRENT_DOCKER_IMAGE" ] && exit
 
 # Pull latest Docker image
