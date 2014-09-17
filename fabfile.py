@@ -14,7 +14,7 @@ env.project = 'boilerplate'
 # -----
 
 
-def notify(msg):
+def _notify(msg):
     bar = '+' + '-' * (len(msg) + 2) + '+'
     print green('')
     print green(bar)
@@ -23,7 +23,7 @@ def notify(msg):
     print green('')
 
 
-def fail(msg):
+def _fail(msg):
     abort(red(msg))
 
 
@@ -35,12 +35,12 @@ def build_docker_image(image_type=None, tag="latest"):
     Build a Docker image
     """
     if image_type not in ('base', 'dev', 'release'):
-        fail("Choose one of base, dev or release")
+        _fail("Choose one of base, dev or release")
 
     # Check Dockerfile exists
     dockerfile = "deploy/docker/Dockerfile-%s" % image_type
     if not os.path.exists(dockerfile):
-        fail("Dockerfile %s does not exist!" % dockerfile)
+        _fail("Dockerfile %s does not exist!" % dockerfile)
 
     # Remove the www/.env file (if it exists) as we don't want it in the image
     envfile = "www/.env"
@@ -53,7 +53,7 @@ def build_docker_image(image_type=None, tag="latest"):
         # Prepend registry when creating a release image
         build_tag = "docker.tangentlabs.co.uk/%s" % build_tag
 
-    notify("Building Docker image '%s' from %s" % (
+    _notify("Building Docker image '%s' from %s" % (
         build_tag, dockerfile))
     dockerlink = "Dockerfile"
     if os.path.islink(dockerlink):
@@ -79,6 +79,9 @@ def _configure(build_name):
         env.client, env.project)
 
 
+# Environments
+
+
 def test():
     _configure('test')
 
@@ -91,6 +94,9 @@ def prod():
     _configure('prod')
 
 
+# Actions
+
+
 def deploy(tag):
     """
     Deploy a Docker tag
@@ -99,8 +105,8 @@ def deploy(tag):
     Docker image to deploy.
     """
     if env.build_name not in ('test', 'stage', 'prod'):
-        fail("Choose one of test, stage or prod")
-    notify("Deploying tag %s" % tag)
+        _fail("Choose one of test, stage or prod")
+    _notify("Deploying tag %s" % tag)
     init_s3()
 
     folder = local("mktemp -d", capture=True)
@@ -125,13 +131,13 @@ def init_s3():
     """
     Ensure the appropriate bucket is created and populated.
     """
-    notify("Ensuring the %(s3_bucket_url)s bucket is created" % env)
+    _notify("Ensuring the %(s3_bucket_url)s bucket is created" % env)
     local("aws s3 mb %(s3_bucket_url)s" % env)
 
 
 def sync_s3():
     """
-    Sync all bootstrap/release files onto S3
+    Sync ALL bootstrap/release files onto S3
     """
     init_s3()
     sync_s3_bootstrap_files()
@@ -142,8 +148,7 @@ def sync_s3_bootstrap_files():
     """
     Sync bootstrap files onto S3
     """
-    init_s3()
-    notify("Syncing bootstrap files")
+    _notify("Syncing bootstrap files")
     files = local("find deploy/aws/s3/bootstrap -type f", capture=True).split()
     for file in files:
         filename = os.path.basename(file)
@@ -155,8 +160,7 @@ def sync_s3_release_files():
     """
     Sync release files onto S3
     """
-    init_s3()
-    notify("Syncing release files")
+    _notify("Syncing release files")
     # Some files in the release folder should not be in source control if they
     # contain sensitive variables.
     files = local("find deploy/aws/s3/release -type f", capture=True).split()
