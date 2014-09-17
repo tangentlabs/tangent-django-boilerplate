@@ -1,2 +1,4 @@
+-r dev.txt
+
 awscli==1.3.23
 Fabric==1.8.3
