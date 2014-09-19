@@ -1,31 +1,24 @@
-# Base image for project. The idea is that this one does not change 
+# Base image for project. The idea is that this file does not change 
 # very often.
 
 # Use standard Ubuntu image
 FROM ubuntu:14.04
 
 # Set locale information correctly as it can have adverse effects on software
-# inside the container
+# inside the container (eg postgres)
 RUN locale-gen --no-purge en_GB.UTF-8
 ENV LC_ALL en_GB.UTF-8
 RUN update-locale LANG=en_GB.UTF-8
 
-# Install common packages
+# Install common packages (eg stuff for PIL, XML and general Python stuff)
 RUN apt-get update
 RUN apt-get install -y build-essential libfreetype6-dev libjpeg-dev \
     libpng12-dev libxml2-dev libxslt-dev python-dev python-pip \
     supervisor vim zlib1g-dev
 RUN apt-get clean && apt-get autoclean
 
-############# Tangent Machine User SSH Key ################
-# In most instances the machine-user SSH key is required  #
-# to pull dependancies from Github or Tangent-Git.        #
-#                                                         #
-# machine_user.key should NEVER be committed to the repo  #
-# copy it manually in place, or symlink it to a file      #
-# outside of the working directory before building        #
-#                                                         #
-###########################################################
+# If the container needs to install private repos from Github, add the 
+# appropriate private key. Don't store it in source control though.
 #ADD deploy/shared/machine_ssh.key /root/.ssh/id_rsa
 
 # Install base Python deps (common to all envs)

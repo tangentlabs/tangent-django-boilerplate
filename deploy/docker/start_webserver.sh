@@ -46,6 +46,7 @@ echo "Compressing"
 ./manage.py compress --force
 
 # Ensure log files are writable by uwsgi process
+[ ! -d /host/logs ] && mkdir /host/logs
 chown www-data:www-data /host/logs/*.log
 
 echo "Starting supervisord"
