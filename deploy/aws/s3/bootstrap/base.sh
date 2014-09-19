@@ -3,18 +3,12 @@
 # Base bootstrapping script which should be applicable for all types of EC2
 # instance.
 #
-# Note, the user-data script exports the notify function as well as the 
-# S3_BUCKET_URL and REGION vars.
+# Note, the user-data script (which executes this one) exports the notify
+# function as well as the S3_BUCKET_URL and REGION vars.
 
 set -e  # Fail fast
 
-# Keep all audit here
-LOGFILE="/var/log/bootstrap.base.log"
-
-# Redirect STDOUT and STDERR to file
-exec 1> >(tee -a $LOGFILE)
-exec 2>&1
-
+# Create folder that we will mount into Docker containers
 mkdir -p /host/
 
 notify "Installing Docker"

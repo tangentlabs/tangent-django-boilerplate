@@ -4,9 +4,6 @@
 
 set -e  # Fail fast
 
-exec 1> >(tee -a /var/log/bootstrap.webserver.log)
-exec 2>&1
-
 # Ensure nginx is installed and serving 404s by default
 notify "Installing nginx"
 apt-get install -y nginx
