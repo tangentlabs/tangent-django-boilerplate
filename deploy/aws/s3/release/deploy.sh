@@ -34,10 +34,14 @@ docker pull $S3_DOCKER_IMAGE > /dev/null
 
 # Fetch sensitive env variables from S3
 echo "Fetching env file"
-aws s3 cp --region=$REGION $S3_BUCKET_URL/release/env /host/env > /dev/null
+ENV_FILE=/host/env-$(date +"%Y-%m-%d-%H-%M-%S")
+aws s3 cp --region=$REGION $S3_BUCKET_URL/release/env $ENV_FILE > /dev/null
 
 echo "Starting Docker container from image $S3_DOCKER_IMAGE"
-DOCKER_CONTAINER_ID=$(docker run -d -p 80 -v /host:/host -e DJANGO_ENV_URI=/host/env $S3_DOCKER_IMAGE)
+DOCKER_CONTAINER_ID=$(docker run -d -p 80 -v /host:/host -e DJANGO_ENV_URI=$ENV_FILE $S3_DOCKER_IMAGE)
+
+# Wait a little while for the container to start up and get uWSGI running
+sleep 10
 
 # Port 80 inside the container will be bound to a random
 # port on the host. Find out what it is!
