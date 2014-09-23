@@ -22,11 +22,8 @@ rm $TMP_FILE
 
 printf "%s - Docker image is %s\n" "$(date)" $S3_DOCKER_IMAGE
 
-# Grab running Docker image (will be empty string if no docker container running)
-CURRENT_DOCKER_IMAGE=$(docker ps | tail -n +2 | awk '{print $2}')
-
-# Exit if the two images are the same
-[ "$S3_DOCKER_IMAGE" == "$CURRENT_DOCKER_IMAGE" ] && exit
+# Exit if the S3 image is already running
+[ $(docker ps | grep "$S3_DOCKER_IMAGE" | wc -l) -ne 0 ] && exit
 
 # Pull latest Docker image
 echo "Pulling Docker image $S3_DOCKER_IMAGE"
@@ -54,7 +51,7 @@ HOSTNAMES=$(cat /tmp/hostnames)
 rm /tmp/hostnames
     
 # Tweak nginx to talk to new container
-echo "Pointing nginx to port $DOCKER_PORT for hostnames $HOSTNAMES"
+echo "Pointing nginx to port $DOCKER_PORT for hostnames '$HOSTNAMES'"
 
 cat > /etc/nginx/sites-enabled/002-docker << EOF
 upstream docker {
