@@ -1,6 +1,6 @@
 import os
 
-from fabric.colors import green, red
+from fabric.colors import green, red, blue
 from fabric.api import local, env, abort
 
 # Config
@@ -61,6 +61,18 @@ def build_docker_image(image_type=None, tag="latest"):
     local("ln -s %s %s" % (dockerfile, dockerlink))
     local("docker build -t %s ." % build_tag)
     local("unlink %s" % dockerlink)
+
+    _notify("Docker image built")
+
+    # Show useful information for release image types
+    if image_type == 'release':
+        image_id = local("docker images | sed -n 2p | awk '{print $3}'",
+                         capture=True)
+        print "Test this container locally by running:\n"
+        print blue(("$ docker run -it -v /tmp:/host -e "
+                    "ENV_FILE_URI=/var/www/env/local %s") % image_id)
+        print "\nTo push this image to the registory, run:\n"
+        print blue("$ docker push %s" % build_tag)
 
 
 # Deployment/AWS tasks
@@ -166,4 +178,5 @@ def sync_s3_release_files():
     files = local("find deploy/aws/s3/release -type f", capture=True).split()
     for file in files:
         filename = os.path.basename(file)
-        local("aws s3 cp %s %s/release/%s" % (file, env.s3_bucket_url, filename))
+        local(
+            "aws s3 cp %s %s/release/%s" % (file, env.s3_bucket_url, filename))

@@ -4,7 +4,7 @@
 #
 # The environmental variables parsed by this script are:
 #
-# DJANGO_ENV_URI (required)
+# ENV_FILE_URI (required)
 #     The filepath to an env file. This will be copied to /var/www/.env
 
 # Helper Functions
@@ -17,9 +17,8 @@ function error() {
 
 set -e  # Fail fast
 
-# Check that an env file was specified
-[ -z "$DJANGO_ENV_URI" ] && error "A DJANGO_ENV_URI env variable must be specified"
-[ ! -f "$DJANGO_ENV_URI" ] && error "$DJANGO_ENV_URI does not exist"
+# Check that an env file URI was specified
+[ -z "$ENV_FILE_URI" ] && error "A ENV_FILE_URI environmental variable must be specified"
 
 # Ensure there is a folder to log to
 [[ ! -d /host/logs ]] && mkdir -p /host/logs
@@ -29,11 +28,22 @@ exec 1> >(tee -a /host/logs/docker.container_startup.log)
 exec 2>&1
 
 # When the container starts is useful audit information
-printf "\n%s - Starting container with DJANGO_ENV_URI=%s\n\n" "$(date)" $DJANGO_ENV_URI
+printf "\n%s - Starting container with ENV_FILE_URI=%s\n\n" "$(date)" $ENV_FILE_URI
 
-
-echo "Linking /var/www/.env to $DJANGO_ENV_URI"
-ln -s $DJANGO_ENV_URI /var/www/.env
+# Grab the envfile using the appropriate mechanism
+echo "Copying $ENV_FILE_URI to /var/www/.env"
+case $ENV_FILE_URI in
+    s3://*|S3://*)
+        REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | grep region | awk -F\" '{print $4}')
+        aws s3 cp --region=$REGION $ENV_FILE_URI /var/www/.env
+        ;;
+    /*)
+        cp $ENV_FILE_URI /var/www/.env
+        ;;
+    *)
+        error "Unrecognised ENV_FILE_URI '$ENV_FILE_URI'"
+        ;;
+esac
 
 echo "Updating database schema"
 cd /var/www/

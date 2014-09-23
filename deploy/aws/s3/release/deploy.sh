@@ -32,13 +32,14 @@ CURRENT_DOCKER_IMAGE=$(docker ps | tail -n +2 | awk '{print $2}')
 echo "Pulling Docker image $S3_DOCKER_IMAGE"
 docker pull $S3_DOCKER_IMAGE > /dev/null
 
-# Fetch sensitive env variables from S3
-echo "Fetching env file"
-ENV_FILE=/host/env-$(date +"%Y-%m-%d-%H-%M-%S")
-aws s3 cp --region=$REGION $S3_BUCKET_URL/release/env $ENV_FILE > /dev/null
-
-echo "Starting Docker container from image $S3_DOCKER_IMAGE"
-DOCKER_CONTAINER_ID=$(docker run -d -p 80 -v /host:/host -e DJANGO_ENV_URI=$ENV_FILE $S3_DOCKER_IMAGE)
+S3_ENV_FILE="$S3_BUCKET_URL/release/env"
+echo "Starting Docker container from image $S3_DOCKER_IMAGE using envfile $S3_ENV_FILE"
+DOCKER_CONTAINER_ID=$(docker run -d -p 80 -v /host:/host -e ENV_FILE_URI=$S3_ENV_FILE $S3_DOCKER_IMAGE)
+if [ $? -ne 0 ] 
+then
+    echo "Docker container didn't start correctly"
+    exit 1
+fi
 
 # Wait a little while for the container to start up and get uWSGI running
 sleep 10

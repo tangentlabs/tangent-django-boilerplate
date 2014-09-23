@@ -1,5 +1,6 @@
 # Dev project image. This installs dev deps
 
+# TODO Extend the appropriate base image for this project
 FROM boilerplate-base:latest
 
 # Install development Python deps
