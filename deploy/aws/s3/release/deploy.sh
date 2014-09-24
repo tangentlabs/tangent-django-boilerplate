@@ -36,6 +36,8 @@ if [ $? -ne 0 ]
 then
     echo "Docker container didn't start correctly"
     exit 1
+else:
+    echo "Docker container $DOCKER_CONTAINER_ID started successfully"
 fi
 
 # Wait a little while for the container to start up and get uWSGI running
@@ -53,14 +55,23 @@ rm /tmp/hostnames
 # Tweak nginx to talk to new container
 echo "Pointing nginx to port $DOCKER_PORT for hostnames '$HOSTNAMES'"
 
+SHORT_CONTAINER_ID=${DOCKER_CONTAINER_ID:0:8}
 cat > /etc/nginx/sites-enabled/002-docker << EOF
 upstream docker {
     server 127.0.0.1:$DOCKER_PORT;
 }
 
+log_format timed_combined '\$remote_addr - \$remote_user [\$time_local]  '
+    '"\$request" \$status \$body_bytes_sent '
+    '"\$http_referer" "\$http_user_agent" '
+    '\$request_time \$upstream_response_time \$pipe';
+
 server {
     listen 80;
     server_name $HOSTNAMES;
+
+    access_log /var/log/nginx/access.docker-container-$SHORT_CONTAINER_ID.log timed_combined;
+    error_log /var/log/nginx/error.docker-container-$SHORT_CONTAINER_ID.log;
 
     location / {
         include uwsgi_params;
