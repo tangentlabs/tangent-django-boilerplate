@@ -2,9 +2,9 @@
 Tangent Django Boilerplate
 ==========================
 
-This is a boilerplate ``README.rst`` created from the `tangent-django-boilerplate`_ project.
-This section should be deleted and the below sections completed when the project
-is created.
+This is a boilerplate ``README.rst`` created from the
+`tangent-django-boilerplate`_ project.  This section should be deleted and the
+below sections completed when the project is created.
 
 .. _`tangent-django-boilerplate`: https://github.com/tangentlabs/tangent-django-boilerplate
 
@@ -36,59 +36,47 @@ when a new boilerplate project is created.
 Project title
 =============
 
-*<Describe the purpose of this project. What problem is it trying to solve.>*
+*<TODO: Describe the purpose of this project. What problem is it trying to solve.>*
 
-*<Describe any third party integrations.>*
+*<TODO: Describe any third party integrations.>*
 
-Status
-------
+*<TODO: Describe what technologies are used within the project.>*
 
-*<Set project up on Travis to get the correct token for the below image>*
 
-.. image:: https://magnum.travis-ci.com/tangentlabs/{{ client }}_{{ project_code }}.png?token=&branch=master   
-   :target: https://magnum.travis-ci.com/tangentlabs/{{ client }}_{{ project_code }}
-
-*<Set project up on Sentry and include URL here>*
+For everyone
+============
 
 Communication
 -------------
 
-*<List mailing lists and any other channels for project communication>*
+*<TODO: List mailing lists and any other channels for project communication>*
+
+Credentials
+-----------
+
+*<TODO: Include credentials for 3rd party systems>*
+
 
 For developers
---------------
+==============
 
-Local set-up
-~~~~~~~~~~~~
+Local installation
+------------------
 
-Clone the repo, create a virtualenv and run::
+Clone repo, create a virtualenv and run::
 
     $ make
 
-This will:
+which will install dependencies and build a local database. Running::
 
-- Install all Python dependencies (from ``www/deploy/requirements.txt``);
+    $ www/manage.py runserver
 
-- Create your database schema
+will serve the site at http://127.0.0.1:8000/. 
 
-- Load sample data (stored in ``fixtures/*.json``)
+*<TODO: Describe any further installation instructions>*
 
-Two sample users are loaded::
-
-    username: superuser
-    email: superuser@example.com
-    password: testing
-
-and::
-
-    username: staff
-    email: staff@example.com
-    password: testing
-
-Re-run this make target when switching branches to rebuild your database.
-
-Testing
-~~~~~~~
+Tests
+-----
 
 Run the test suite using either::
 
@@ -103,8 +91,15 @@ See the `py.test docs`_ for info on how to run subsets of the test suite.
 
 .. _`py.test docs`: http://pytest.org/latest/
 
+Continuous integration status:
+
+*<TODO: Set project up on Travis to get the correct token for the below image>*
+
+.. image:: https://magnum.travis-ci.com/tangentlabs/{{ client }}_{{ project_code }}.png?token=&branch=master   
+   :target: https://magnum.travis-ci.com/tangentlabs/{{ client }}_{{ project_code }}
+
 Deployment
-~~~~~~~~~~
+----------
 
 Deployment uses Fabric_. There are helper scripts for each environment::
 
@@ -114,26 +109,34 @@ Deployment uses Fabric_. There are helper scripts for each environment::
 
 .. _Fabric: http://www.fabfile.org/
 
-For testers
------------
-
-*<List information that testers will need to know such as testing bankcard
-numbers.>*
-
 Infrastructure
 --------------
 
-*<Describe the infrastructure for this project, covering webservers, databases
+*<TODO: Describe the infrastructure for this project, covering webservers, databases
 and other services (eg Solr, RabbitMQ). Include versions>*
 
-*<List the IP addresses of each server used by this project and any HTTP basic
+*<TODO: List the IP addresses of each server used by this project and any HTTP basic
 auth credentials>*
+
+Monitoring
+----------
+
+*<TODO: Set project up on Zabbix and include URL here>*
+
+*<TODO: Set project up on Sentry and include URL here>*
 
 Notes
 -----
 
-*<Describe any gotchas or unusual parts of the codebase. Assume the person who
+*<TODO: Describe any gotchas or unusual parts of the codebase. Assume the person who
 will take over this project from you is a serial killer who knows where you
 live.>*
 
-*<Describe the reasoning behind major design decisions>*
+*<TODO: Describe the reasoning behind major design decisions>*
+
+
+For testers
+===========
+
+*<TODO: List information that testers will need to know such as testing bankcard
+numbers.>*
