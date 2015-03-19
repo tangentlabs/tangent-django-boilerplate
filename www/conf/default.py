@@ -129,7 +129,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.flatpages',
     'django.contrib.staticfiles',
-    'south',
     'django_extensions',
     'debug_toolbar',
     'compressor',
@@ -239,3 +238,5 @@ RAVEN_CONFIG = {
     'dsn': '',  # each env should set its own Sentry DSN
     'timeout': 5,
 }
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
