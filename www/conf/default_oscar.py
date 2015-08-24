@@ -273,6 +273,8 @@ RAVEN_CONFIG = {
     'timeout': 5,
 }
 
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
 # Oscar settings
 from oscar.defaults import *
 

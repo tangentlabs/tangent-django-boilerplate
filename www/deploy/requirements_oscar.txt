@@ -3,8 +3,7 @@
 -e git://github.com/tangentlabs/django-oscar.git#egg=django_oscar-dev
 
 # Application
-Django>=1.6
-South==0.8.4
+Django>=1.7
 django-compressor==1.3
 python-memcached==1.53
 raven==4.2.3
